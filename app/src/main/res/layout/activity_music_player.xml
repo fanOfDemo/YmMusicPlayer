@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.yw.musicplayer.MusicPlayerActivity">
+
+    <co.mobiwise.library.InteractivePlayerView
+        android:id="@+id/ipv"
+        android:layout_width="230dp"
+        android:layout_gravity="top|center_horizontal"
+        android:layout_height="430dp"
+        app:imageCover="@mipmap/ic_launcher"
+        app:emptyColor="#aaffffff"
+        app:loadedColor="#fff44336"
+    app:selectedAction1="@drawable/shuffle_selected"
+    app:selectedAction2="@drawable/like_selected"
+    app:selectedAction3="@drawable/replay_selected"
+    app:unselectedAction1="@drawable/shuffle_unselected"
+    app:unselectedAction2="@drawable/like_unselected"
+    app:unselectedAction3="@drawable/replay_unselected"
+        
+        />
+
+   
+    
+
+    <com.cleveroad.audiovisualization.GLAudioVisualizationView
+        android:id="@+id/visualizer_view"
+        android:layout_gravity="bottom"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        app:background_color="@color/color_bg"
+        app:bubble_size="16dp"
+        app:footer_height="16dp"
+        app:layers_count="16"
+        app:randomize_bubble_size="true"
+        app:wave_height="20dp"
+        app:waves_count="16"
+        />
+
+</FrameLayout>
