@@ -1,6 +1,5 @@
 package com.yw.musicplayer;
 
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -39,7 +38,7 @@ public class MusicPlayerActivity extends AppCompatActivity {
         glAudioVisualizationView = (GLAudioVisualizationView) findViewById(R.id.visualizer_view);
 
 
-        mpv.setCoverURL(String.valueOf(Uri.parse(mAudioList.get(curPosition).getAlbum())));
+        mpv.setCoverURL("http://pic16.nipic.com/20110928/7745445_045524550001_2.jpg");
         BeApplication.mMainService.start(mAudioList.get(curPosition));
         mpv.start();
         glAudioVisualizationView.linkTo(MainService.mPlayer);
@@ -86,7 +85,7 @@ public class MusicPlayerActivity extends AppCompatActivity {
         }
         mpv.start();
         BeApplication.mMainService.start(mAudioList.get(curPosition));
-
+        musicTitle.setText(mAudioList.get(curPosition).getTitle() + " " + mAudioList.get(curPosition).getArtist());
     }
 
 
