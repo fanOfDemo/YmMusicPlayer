@@ -3,6 +3,8 @@ package com.yw.musicplayer.po;
 import android.os.Bundle;
 import android.provider.MediaStore;
 
+import java.io.Serializable;
+
 /**
  * 项目名称：YmMusicPlayer
  * 类描述：
@@ -12,7 +14,7 @@ import android.provider.MediaStore;
  * 修改时间：16/3/2 下午10:41
  * 修改备注：
  */
-public class Audio {
+public class Audio implements Serializable {
 
 
     private String mTitle,
@@ -41,7 +43,7 @@ public class Audio {
             isMusic = false,
             isNotification = false;
 
-    public Audio (Bundle bundle) {
+    public Audio(Bundle bundle) {
         mId = bundle.getInt(MediaStore.Audio.Media._ID);
         mTitle = bundle.getString(MediaStore.Audio.Media.TITLE);
         mTitleKey = bundle.getString(MediaStore.Audio.Media.TITLE_KEY);
@@ -72,87 +74,87 @@ public class Audio {
         return mId;
     }
 
-    public String getMimeType () {
+    public String getMimeType() {
         return mMimeType;
     }
 
-    public int getDuration () {
+    public int getDuration() {
         return mDuration;
     }
 
-    public int getSize () {
+    public int getSize() {
         return mSize;
     }
 
-    public boolean isRingtone () {
+    public boolean isRingtone() {
         return isRingtone;
     }
 
-    public boolean isPodcast () {
+    public boolean isPodcast() {
         return isPodcast;
     }
 
-    public boolean isAlarm () {
+    public boolean isAlarm() {
         return isAlarm;
     }
 
-    public boolean isMusic () {
+    public boolean isMusic() {
         return isMusic;
     }
 
-    public boolean isNotification () {
+    public boolean isNotification() {
         return isNotification;
     }
 
-    public String getTitle () {
+    public String getTitle() {
         return mTitle;
     }
 
-    public String getTitleKey () {
+    public String getTitleKey() {
         return mTitleKey;
     }
 
-    public String getArtist () {
+    public String getArtist() {
         return mArtist;
     }
 
-    public int getArtistId () {
+    public int getArtistId() {
         return mArtistId;
     }
 
-    public String getArtistKey () {
+    public String getArtistKey() {
         return mArtistKey;
     }
 
-    public String getComposer () {
+    public String getComposer() {
         return mComposer;
     }
 
-    public String getAlbum () {
+    public String getAlbum() {
         return mAlbum;
     }
 
-    public int getAlbumId () {
+    public int getAlbumId() {
         return mAlbumId;
     }
 
-    public String getAlbumKey () {
+    public String getAlbumKey() {
         return mAlbumKey;
     }
 
-    public String getDisplayName () {
+    public String getDisplayName() {
         return mDisplayName;
     }
 
-    public int getYear () {
+    public int getYear() {
         return mYear;
     }
 
-    public int getTrack () {
+    public int getTrack() {
         return mTrack;
     }
 
-    public String getPath () {
+    public String getPath() {
         return mPath;
     }
 

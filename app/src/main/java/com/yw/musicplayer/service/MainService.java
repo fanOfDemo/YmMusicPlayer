@@ -89,6 +89,9 @@ public class MainService extends Service {
     }
 
     private void doStart() {
+        if(mPlayer.isPlaying()){
+            mPlayer.stop();
+        }
         mPlayer.start();
         changeState(State.STARTED);
     }

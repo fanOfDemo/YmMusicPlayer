@@ -1,75 +1,102 @@
 package com.yw.musicplayer;
 
-import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.TextView;
 
-import com.cleveroad.audiovisualization.AudioVisualization;
+import com.cleveroad.audiovisualization.GLAudioVisualizationView;
+import com.yw.musicplayer.po.Audio;
 import com.yw.musicplayer.service.MainService;
 
-import co.mobiwise.library.InteractivePlayerView;
-import co.mobiwise.library.OnActionClickedListener;
+import java.util.List;
+
+import co.mobiwise.library.MusicPlayerView;
 
 public class MusicPlayerActivity extends AppCompatActivity {
-
-    private AudioVisualization audioVisualization;
+    TextView musicTitle;
+    TextView prev;
+    TextView next;
+    GLAudioVisualizationView glAudioVisualizationView;
+    MusicPlayerView mpv;
+    List<Audio> mAudioList;
+    int curPosition = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_music_player);
-        audioVisualization = (AudioVisualization) findViewById(R.id.visualizer_view);
-        audioVisualization.linkTo(MainService.mPlayer);
+        mAudioList = (List<Audio>) getIntent().getSerializableExtra("AudioList");
+        if (mAudioList == null || mAudioList.isEmpty()) {
+            onBackPressed();
+        }
+        musicTitle = (TextView) findViewById(R.id.title);
+        prev = (TextView) findViewById(R.id.prev);
+        next = (TextView) findViewById(R.id.next);
+        musicTitle.setText(mAudioList.get(curPosition).getTitle() + " " + mAudioList.get(curPosition).getArtist());
+        mpv = (MusicPlayerView) findViewById(R.id.mpv);
+        glAudioVisualizationView = (GLAudioVisualizationView) findViewById(R.id.visualizer_view);
 
 
-        InteractivePlayerView ipv = (InteractivePlayerView) findViewById(R.id.ipv);
-        ipv.setProgressEmptyColor(Color.GRAY);
-        ipv.setProgressEmptyColor(Color.BLACK);
-        ipv.setMax(MainService.mPlayer.getDuration()); // music duration in seconds.    
-        ipv.setProgress(MainService.mPlayer.getCurrentPosition());
-        ipv.setCoverURL("http://img.kejixun.com/2013/1101/20131101024212971.jpg");
-        ipv.setProgressLoadedColor(Color.RED);
-        
-        ipv.start();
-        ipv.setOnActionClickedListener(new OnActionClickedListener() {
+        mpv.setCoverURL(String.valueOf(Uri.parse(mAudioList.get(curPosition).getAlbum())));
+        BeApplication.mMainService.start(mAudioList.get(curPosition));
+        mpv.start();
+        glAudioVisualizationView.linkTo(MainService.mPlayer);
+
+        final int curTime = MainService.mPlayer.getDuration() / 1000;
+        mpv.setMax(curTime);
+        mpv.setProgress(MainService.mPlayer.getCurrentPosition());
+        mpv.setAutoProgress(true);
+
+
+        mpv.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onActionClicked(int id) {
-                switch (id) {
-                    case 1:
-                        BeApplication.mMainService.pause();
-                        //Called when 1. action is clicked.
-                        break;
-                    case 2:
-                        BeApplication.mMainService.pause();
-                        //Called when 2. action is clicked.
-                        break;
-                    case 3:
-                        //Called when 3. action is clicked.
-                        break;
-                    default:
-                        break;
-                }
+            public void onClick(View v) {
+                player();
             }
         });
-      
+        prev.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (curPosition <= 0) {
+                    curPosition = mAudioList.size() - 1;
+                }
+                curPosition--;
+                player();
+            }
+        });
+        next.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (curPosition >= mAudioList.size()) {
+                    curPosition = 0;
+                }
+                curPosition++;
+                player();
+            }
+        });
+
     }
+
+    private void player() {
+        if (mpv.isRotating()) {
+            mpv.stop();
+            BeApplication.mMainService.pause();
+        }
+        mpv.start();
+        BeApplication.mMainService.start(mAudioList.get(curPosition));
+
+    }
+
 
     @Override
     protected void onResume() {
         super.onResume();
-        audioVisualization.onResume();
-    }
-
-    @Override
-    public void onPause() {
-        audioVisualization.onPause();
-        super.onPause();
     }
 
     @Override
     protected void onDestroy() {
-        audioVisualization.release();
         super.onDestroy();
-        
     }
 }

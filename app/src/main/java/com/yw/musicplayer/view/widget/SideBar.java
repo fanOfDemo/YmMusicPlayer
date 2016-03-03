@@ -1,7 +1,7 @@
 /*
  * @wengyiming
  */
-package com.yw.musicplayer.view;
+package com.yw.musicplayer.view.widget;
 
 import android.content.Context;
 import android.graphics.Canvas;

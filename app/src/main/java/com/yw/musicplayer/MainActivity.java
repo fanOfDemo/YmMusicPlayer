@@ -14,6 +14,7 @@ import com.yw.musicplayer.adapter.MusicListAdapter;
 import com.yw.musicplayer.po.Audio;
 import com.yw.musicplayer.util.MediaUtils;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,8 +45,8 @@ public class MainActivity extends AppCompatActivity {
         musicListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(final AdapterView<?> parent, final View view, final int position, final long id) {
-                BeApplication.mMainService.start(mAudioList.get(position));
-                Intent mIntent = new Intent(MainActivity.this,MusicPlayerActivity.class);
+                Intent mIntent = new Intent(MainActivity.this, MusicPlayerActivity.class);
+                mIntent.putExtra("AudioList", (Serializable) mAudioList);
                 startActivity(mIntent);
             }
         });

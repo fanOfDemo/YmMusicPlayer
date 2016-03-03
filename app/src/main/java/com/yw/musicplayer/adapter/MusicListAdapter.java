@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.yw.musicplayer.R;
@@ -48,29 +49,28 @@ public class MusicListAdapter extends BaseAdapter {
         HolderView holderView = null;
         if (v == null) {
             holderView = new HolderView();
-            v = inflater.inflate(R.layout.musiclist_row, null);
-            holderView.music_name = (TextView) v
-                    .findViewById(R.id.music_name);
-            holderView.music_artist = (TextView) v
-                    .findViewById(R.id.music_artist);
-            holderView.music_filesize = (TextView) v
-                    .findViewById(R.id.music_filesize);
+            v = inflater.inflate(R.layout.media_list_item, null);
+            holderView.title = (TextView) v
+                    .findViewById(R.id.title);
+            holderView.description = (TextView) v
+                    .findViewById(R.id.description);
+            holderView.playEq = (ImageView) v
+                    .findViewById(R.id.play_eq);
             v.setTag(holderView);
         } else {
             holderView = (HolderView) v.getTag();
         }
         final Audio musicInfo = musicInfos.get(position);
-        holderView.music_name.setText(musicInfo.getTitle());
-        holderView.music_artist.setText(musicInfo.getArtist());
-//        holderView.music_filesize.setText(musicInfo.getSize());
+        holderView.title.setText(musicInfo.getTitle());
+        holderView.description.setText(musicInfo.getArtist());
         return v;
     }
 
     static class HolderView {
 
-        TextView music_name;
-        TextView music_artist;
-        TextView music_filesize;
+        ImageView playEq;
+        TextView title;
+        TextView description;
     }
 
 }
