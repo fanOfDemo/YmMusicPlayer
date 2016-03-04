@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="colors">
+        <item>@color/md_light_blue_700_color_code</item>
+        <item>@color/md_light_blue_500_color_code</item>
+        <item>@color/md_light_blue_300_color_code</item>
+        <item>@color/md_light_blue_100_color_code</item>
+    </string-array>
+
+
+    <!-- light_blue -->
+    <color name="md_light_blue_50_color_code">#e1f5fe</color>
+    <color name="md_light_blue_100_color_code">#b3e5fc</color>
+    <color name="md_light_blue_200_color_code">#81d4fa</color>
+    <color name="md_light_blue_300_color_code">#4fc3f7</color>
+    <color name="md_light_blue_400_color_code">#29b6f6</color>
+    <color name="md_light_blue_500_color_code">#03a9f4</color>
+    <color name="md_light_blue_600_color_code">#039be5</color>
+    <color name="md_light_blue_700_color_code">#0288d1</color>
+    <color name="md_light_blue_800_color_code">#0277bd</color>
+    <color name="md_light_blue_900_color_code">#01579b</color>
+    <color name="md_light_blue_a100_color_code">#80d8ff</color>
+    <color name="md_light_blue_a200_color_code">#40c4ff</color>
+    <color name="md_light_blue_a400_color_code">#00b0ff</color>
+    <color name="md_light_blue_a700_color_code">#0091ea</color>
+    
+    <color name="md_blue_50_color_code">#e7e9fd</color>
+    <color name="md_blue_100_color_code">#d0d9ff</color>
+    <color name="md_blue_200_color_code">#afbfff</color>
+    <color name="md_blue_300_color_code">#91a7ff</color>
+    <color name="md_blue_400_color_code">#738ffe</color>
+    <color name="md_blue_500_color_code">#5677fc</color>
+    <color name="md_blue_600_color_code">#4e6cef</color>
+    <color name="md_blue_700_color_code">#455ede</color>
+    <color name="md_blue_800_color_code">#3b50ce</color>
+    <color name="md_blue_900_color_code">#2a36b1</color>
+    <color name="md_blue_a100_color_code">#a6baff</color>
+    <color name="md_blue_a200_color_code">#6889ff</color>
+    <color name="md_blue_a400_color_code">#4d73ff</color>
+    <color name="md_blue_a700_color_code">#4d69ff</color>
+</resources>

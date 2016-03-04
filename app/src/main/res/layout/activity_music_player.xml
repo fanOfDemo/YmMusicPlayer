@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_gravity="center"
-    android:gravity="center"
-    tools:context="com.yw.musicplayer.MusicPlayerActivity">
+             xmlns:app="http://schemas.android.com/apk/res-auto"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:layout_gravity="center"
+             android:gravity="center"
+             tools:context="com.yw.musicplayer.MusicPlayerActivity">
 
     <com.cleveroad.audiovisualization.GLAudioVisualizationView
         android:id="@+id/visualizer_view"
@@ -14,12 +14,13 @@
         android:layout_height="match_parent"
         android:layout_gravity="bottom"
         app:background_color="@color/colorPrimary"
-        app:bubble_size="32dp"
-        app:footer_height="108dp"
-        app:layers_count="4"
+        app:bubble_size="20dp"
+        app:footer_height="80dp"
+        app:layers_count="8"
         app:randomize_bubble_size="true"
         app:wave_height="16dp"
-        app:waves_count="4" />
+        app:waves_colors="@array/colors"
+        app:waves_count="8"/>
 
 
     <TextView
@@ -30,7 +31,7 @@
         android:gravity="center"
         android:text="dasdsadsa"
         android:textColor="#fff"
-        android:textSize="20dp" />
+        android:textSize="20dp"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -44,11 +45,11 @@
             android:id="@+id/mpv"
             android:layout_width="250dp"
             android:layout_height="250dp"
-            app:buttonColor="#000000"
-            app:progressEmptyColor="#20FFFFFF"
-            app:progressLoadedColor="#00B8D4"
-            app:textColor="#80FFFFFF"
-            app:textSize="14sp" />
+            app:buttonColor="@color/md_light_blue_500_color_code"
+            app:progressEmptyColor="@color/md_light_blue_100_color_code"
+            app:progressLoadedColor="@color/md_light_blue_500_color_code"
+            app:textColor="#e6FFFFFF"
+            app:textSize="14sp"/>
     </LinearLayout>
 
     <LinearLayout
@@ -59,23 +60,23 @@
         android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/prev"
+            android:id="@+id/prevBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:gravity="center"
             android:text="上一曲"
             android:textColor="#fff"
-            android:textSize="20dp" />
+            android:textSize="20dp"/>
 
         <TextView
-            android:id="@+id/next"
+            android:id="@+id/nextBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:gravity="center"
             android:text="下一曲"
             android:textColor="#fff"
-            android:textSize="20dp" />
+            android:textSize="20dp"/>
     </LinearLayout>
 </FrameLayout>

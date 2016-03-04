@@ -9,8 +9,10 @@ import android.os.Binder;
 import android.os.IBinder;
 
 import com.yw.musicplayer.po.Audio;
+import com.yw.musicplayer.util.MediaUtils;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * 项目名称：YmMusicPlayer
@@ -22,7 +24,7 @@ import java.io.IOException;
  * 修改备注：
  */
 public class MainService extends Service {
-    
+
 
     public static class ServiceBinder extends Binder {
 
@@ -44,11 +46,12 @@ public class MainService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        mAudioList = MediaUtils.getAudioList(this);
         return Service.START_STICKY;
         //return super.onStartCommand(intent, flags, startId);
     }
 
-
+    public static List<Audio> mAudioList;
     public static MediaPlayer mPlayer;
     private int mCurrentState;
     private Audio mCurrentAudio;
@@ -89,7 +92,7 @@ public class MainService extends Service {
     }
 
     private void doStart() {
-        if(mPlayer.isPlaying()){
+        if (mPlayer.isPlaying()) {
             mPlayer.stop();
         }
         mPlayer.start();
@@ -104,6 +107,13 @@ public class MainService extends Service {
     public void stop() {
         mPlayer.stop();
         changeState(State.STOPPED);
+    }
+
+    public void continued() {
+        if(!mPlayer.isPlaying()){
+            mPlayer.start();
+        }
+
     }
 
     public void start(Audio audio) {
