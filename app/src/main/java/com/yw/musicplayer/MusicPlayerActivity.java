@@ -3,6 +3,7 @@ package com.yw.musicplayer;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.Window;
 import android.widget.TextView;
 
 import com.cleveroad.audiovisualization.GLAudioVisualizationView;
@@ -21,38 +22,98 @@ public class MusicPlayerActivity extends AppCompatActivity {
     MusicPlayerView mpv;
     List<Audio> mAudioList;
     int curPosition = 0;
+    boolean isPaused = true;
+    boolean isStoped = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_music_player);
-        mAudioList = (List<Audio>) getIntent().getSerializableExtra("AudioList");
+        getSupportActionBar().hide();
+        glAudioVisualizationView = (GLAudioVisualizationView) findViewById(R.id.visualizer_view);
+        glAudioVisualizationView.linkTo(0);
+        curPosition = getIntent().getIntExtra("position", 0);
+        mAudioList = MainService.mAudioList;
         if (mAudioList == null || mAudioList.isEmpty()) {
             onBackPressed();
         }
-        musicTitle = (TextView) findViewById(R.id.title);
-        prev = (TextView) findViewById(R.id.prev);
-        next = (TextView) findViewById(R.id.next);
-        musicTitle.setText(mAudioList.get(curPosition).getTitle() + " " + mAudioList.get(curPosition).getArtist());
-        mpv = (MusicPlayerView) findViewById(R.id.mpv);
-        glAudioVisualizationView = (GLAudioVisualizationView) findViewById(R.id.visualizer_view);
 
 
-        mpv.setCoverURL("http://pic16.nipic.com/20110928/7745445_045524550001_2.jpg");
         BeApplication.mMainService.start(mAudioList.get(curPosition));
-        mpv.start();
-        glAudioVisualizationView.linkTo(MainService.mPlayer);
+        musicTitle = (TextView) findViewById(R.id.title);
+        prev = (TextView) findViewById(R.id.prevBtn);
+        next = (TextView) findViewById(R.id.nextBtn);
+        musicTitle.setText(mAudioList.get(curPosition).getTitle() + " \n" + mAudioList.get(curPosition).getArtist());
+        mpv = (MusicPlayerView) findViewById(R.id.mpv);
 
+    }
+
+    private void player() {
+        if (mpv.isRotating()) {
+            BeApplication.mMainService.pause();
+            mpv.setProgress(0);
+        }
         final int curTime = MainService.mPlayer.getDuration() / 1000;
         mpv.setMax(curTime);
         mpv.setProgress(MainService.mPlayer.getCurrentPosition());
-        mpv.setAutoProgress(true);
+        BeApplication.mMainService.start(mAudioList.get(curPosition));
+        musicTitle.setText(mAudioList.get(curPosition).getTitle() + " \n" + mAudioList.get(curPosition).getArtist());
+    }
 
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mpv.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                initMediaView();
+                glAudioVisualizationView.onResume();
+            }
+        }, 500);
+
+    }
+
+    private void initMediaView() {
+
+        if (MainService.mPlayer.isPlaying()) {
+            isStoped = false;
+            isPaused = false;
+            final int curTime = MainService.mPlayer.getDuration() / 1000;
+            mpv.setMax(curTime);
+            mpv.setProgress(MainService.mPlayer.getCurrentPosition());
+            mpv.setAutoProgress(true);
+            mpv.start();
+        } else {
+            if (MainService.mPlayer == null) {
+                isStoped = true;
+                isPaused = true;
+                mpv.setProgress(0);
+                mpv.setAutoProgress(true);
+                mpv.stop();
+            } else if (!MainService.mPlayer.isPlaying()) {
+                final int curTime = MainService.mPlayer.getDuration() / 1000;
+                mpv.setMax(curTime);
+                mpv.setProgress(MainService.mPlayer.getCurrentPosition());
+                mpv.setAutoProgress(true);
+                mpv.stop();
+            }
+        }
+     
+        glAudioVisualizationView.linkTo(MainService.mPlayer);
+        mpv.setCoverURL("http://img0.imgtn.bdimg.com/it/u=826641845,3645215705&fm=21&gp=0.jpg");
 
         mpv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                player();
+                if (mpv.isRotating()) {
+                    mpv.stop();
+                    BeApplication.mMainService.pause();
+                } else {
+                    mpv.start();
+                    BeApplication.mMainService.start(mAudioList.get(curPosition));
+                }
             }
         });
         prev.setOnClickListener(new View.OnClickListener() {
@@ -75,27 +136,18 @@ public class MusicPlayerActivity extends AppCompatActivity {
                 player();
             }
         });
-
     }
-
-    private void player() {
-        if (mpv.isRotating()) {
-            mpv.stop();
-            BeApplication.mMainService.pause();
-        }
-        mpv.start();
-        BeApplication.mMainService.start(mAudioList.get(curPosition));
-        musicTitle.setText(mAudioList.get(curPosition).getTitle() + " " + mAudioList.get(curPosition).getArtist());
-    }
-
 
     @Override
-    protected void onResume() {
-        super.onResume();
+    public void onPause() {
+        glAudioVisualizationView.onPause();
+        super.onPause();
     }
+
 
     @Override
     protected void onDestroy() {
+        glAudioVisualizationView.release();
         super.onDestroy();
     }
 }
