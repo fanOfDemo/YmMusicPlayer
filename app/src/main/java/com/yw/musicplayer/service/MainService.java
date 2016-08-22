@@ -1,5 +1,8 @@
 package com.yw.musicplayer.service;
 
+import com.yw.musicplayer.po.Audio;
+import com.yw.musicplayer.util.MediaUtils;
+
 import android.app.Service;
 import android.content.Intent;
 import android.media.AudioManager;
@@ -8,10 +11,8 @@ import android.net.Uri;
 import android.os.Binder;
 import android.os.IBinder;
 
-import com.yw.musicplayer.po.Audio;
-import com.yw.musicplayer.util.MediaUtils;
-
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -46,12 +47,13 @@ public class MainService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        mAudioList = MediaUtils.getAudioList(this);
+
         return Service.START_STICKY;
         //return super.onStartCommand(intent, flags, startId);
     }
 
-    public static List<Audio> mAudioList;
+
+    public static List<Audio> mAudioList = new ArrayList<>();
     public static MediaPlayer mPlayer;
     private int mCurrentState;
     private Audio mCurrentAudio;
@@ -92,6 +94,9 @@ public class MainService extends Service {
     }
 
     private void doStart() {
+        if (mAudioList == null || mAudioList.isEmpty()) {
+            mAudioList = MediaUtils.getAudioList(this);
+        }
         if (mPlayer.isPlaying()) {
             mPlayer.stop();
         }
@@ -110,7 +115,7 @@ public class MainService extends Service {
     }
 
     public void continued() {
-        if(!mPlayer.isPlaying()){
+        if (!mPlayer.isPlaying()) {
             mPlayer.start();
         }
 

@@ -1,5 +1,8 @@
 package com.yw.musicplayer;
 
+import com.yw.musicplayer.po.Audio;
+import com.yw.musicplayer.service.MainService;
+
 import android.app.Application;
 import android.app.Service;
 import android.content.ComponentName;
@@ -10,9 +13,6 @@ import android.media.AudioManager;
 import android.os.IBinder;
 import android.util.Log;
 import android.widget.Toast;
-
-import com.yw.musicplayer.po.Audio;
-import com.yw.musicplayer.service.MainService;
 
 /**
  * 项目名称：YmMusicPlayer
@@ -28,6 +28,7 @@ public class BeApplication extends Application implements ServiceConnection, Aud
     public static MainService mMainService;
 
     private AudioManager mAudioManager;
+    private int PERMISSiON_REQUEST_CODE = 123;
 
     @Override
     public void onCreate() {
@@ -36,6 +37,7 @@ public class BeApplication extends Application implements ServiceConnection, Aud
         bindMainService();
         mAudioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
     }
+
 
     public void startMainService() {
         Intent it = new Intent(this, MainService.class);
