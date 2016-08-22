@@ -32,8 +32,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-//        setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
-
         mRefreshLayout = (RefreshLayout) findViewById(R.id.refreshlayout);
         musicListView = (ListView) findViewById(R.id.list);
         musicListAdapter = new MusicListAdapter(MainActivity.this, (ArrayList<Audio>) mAudioList);

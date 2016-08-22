@@ -1,14 +1,15 @@
 package com.yw.musicplayer;
 
+import com.cleveroad.audiovisualization.GLAudioVisualizationView;
+import com.yw.musicplayer.po.Audio;
+import com.yw.musicplayer.service.MainService;
+import com.yw.musicplayer.util.MediaUtils;
+
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.Window;
 import android.widget.TextView;
-
-import com.cleveroad.audiovisualization.GLAudioVisualizationView;
-import com.yw.musicplayer.po.Audio;
-import com.yw.musicplayer.service.MainService;
 
 import java.util.List;
 
@@ -30,17 +31,15 @@ public class MusicPlayerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_music_player);
-        getSupportActionBar().hide();
         glAudioVisualizationView = (GLAudioVisualizationView) findViewById(R.id.visualizer_view);
         glAudioVisualizationView.linkTo(0);
         curPosition = getIntent().getIntExtra("position", 0);
         mAudioList = MainService.mAudioList;
         if (mAudioList == null || mAudioList.isEmpty()) {
-            onBackPressed();
+            mAudioList = MediaUtils.getAudioList(this);
         }
 
-
-        BeApplication.mMainService.start(mAudioList.get(curPosition));
+        App.mMainService.start(mAudioList.get(curPosition));
         musicTitle = (TextView) findViewById(R.id.title);
         prev = (TextView) findViewById(R.id.prevBtn);
         next = (TextView) findViewById(R.id.nextBtn);
@@ -51,13 +50,13 @@ public class MusicPlayerActivity extends AppCompatActivity {
 
     private void player() {
         if (mpv.isRotating()) {
-            BeApplication.mMainService.pause();
+            App.mMainService.pause();
             mpv.setProgress(0);
         }
         final int curTime = MainService.mPlayer.getDuration() / 1000;
         mpv.setMax(curTime);
         mpv.setProgress(MainService.mPlayer.getCurrentPosition());
-        BeApplication.mMainService.start(mAudioList.get(curPosition));
+        App.mMainService.start(mAudioList.get(curPosition));
         musicTitle.setText(mAudioList.get(curPosition).getTitle() + " \n" + mAudioList.get(curPosition).getArtist());
     }
 
@@ -109,10 +108,10 @@ public class MusicPlayerActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (mpv.isRotating()) {
                     mpv.stop();
-                    BeApplication.mMainService.pause();
+                    App.mMainService.pause();
                 } else {
                     mpv.start();
-                    BeApplication.mMainService.start(mAudioList.get(curPosition));
+                    App.mMainService.start(mAudioList.get(curPosition));
                 }
             }
         });

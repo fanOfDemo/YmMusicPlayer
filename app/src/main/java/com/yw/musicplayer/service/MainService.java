@@ -53,7 +53,7 @@ public class MainService extends Service {
     }
 
 
-    public static List<Audio> mAudioList = new ArrayList<>();
+    public volatile static List<Audio> mAudioList = new ArrayList<>();
     public static MediaPlayer mPlayer;
     private int mCurrentState;
     private Audio mCurrentAudio;

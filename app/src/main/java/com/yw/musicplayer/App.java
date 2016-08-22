@@ -23,12 +23,11 @@ import android.widget.Toast;
  * 修改时间：16/3/2 下午10:50
  * 修改备注：
  */
-public class BeApplication extends Application implements ServiceConnection, AudioManager.OnAudioFocusChangeListener {
+public class App extends Application implements ServiceConnection, AudioManager.OnAudioFocusChangeListener {
 
     public static MainService mMainService;
 
     private AudioManager mAudioManager;
-    private int PERMISSiON_REQUEST_CODE = 123;
 
     @Override
     public void onCreate() {
