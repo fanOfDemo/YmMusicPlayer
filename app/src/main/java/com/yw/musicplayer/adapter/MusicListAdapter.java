@@ -3,6 +3,9 @@
  */
 package com.yw.musicplayer.adapter;
 
+import com.yw.musicplayer.R;
+import com.yw.musicplayer.po.Audio;
+
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,14 +14,11 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.yw.musicplayer.R;
-import com.yw.musicplayer.po.Audio;
-
 import java.util.ArrayList;
 
 public class MusicListAdapter extends BaseAdapter {
 
-    private ArrayList<Audio> musicInfos;
+    public ArrayList<Audio> musicInfos;
     private LayoutInflater inflater;
 
     public MusicListAdapter(Context mcContext, ArrayList<Audio> musicInfos) {
