@@ -2,7 +2,7 @@
 <resources>
     <color name="colorPrimary">#ffff5722</color>
     <color name="colorPrimaryDark">#ffbf360c</color>
-    <color name="colorAccent">#00B8D4</color>
+    <color name="colorAccent">#ffbf360c</color>
 
     <color name="tv_branding">#ffff5722</color>
     <color name="tv_branding_dark">#ffbf360c</color>
@@ -20,8 +20,15 @@
     <color name="background_gradient_start">#000000</color>
     <color name="background_gradient_end">#DDDDDD</color>
     <color name="default_background">#0096a6</color>
-    
-    
-    
+
+
+    <color name="theme_color_primary">#fb7299</color>
+    <color name="theme_color_primary_dark">#b85671</color>
+    <color name="theme_color_primary_trans">#99f0486c</color>
+
+    <color name="p">#ffff5722</color>
+    <color name="p_d">#ffbf360c</color>
+    <color name="ac">#00B8D4</color>
+
 
 </resources>

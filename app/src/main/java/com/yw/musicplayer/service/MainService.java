@@ -1,8 +1,5 @@
 package com.yw.musicplayer.service;
 
-import com.yw.musicplayer.po.Audio;
-import com.yw.musicplayer.util.MediaUtils;
-
 import android.app.Service;
 import android.content.Intent;
 import android.media.AudioManager;
@@ -11,9 +8,9 @@ import android.net.Uri;
 import android.os.Binder;
 import android.os.IBinder;
 
+import com.yw.musicplayer.po.Audio;
+
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * 项目名称：YmMusicPlayer
@@ -53,7 +50,6 @@ public class MainService extends Service {
     }
 
 
-    public volatile static List<Audio> mAudioList = new ArrayList<>();
     public static MediaPlayer mPlayer;
     private int mCurrentState;
     private Audio mCurrentAudio;
@@ -94,9 +90,6 @@ public class MainService extends Service {
     }
 
     private void doStart() {
-        if (mAudioList == null || mAudioList.isEmpty()) {
-            mAudioList = MediaUtils.getAudioList(this);
-        }
         if (mPlayer.isPlaying()) {
             mPlayer.stop();
         }

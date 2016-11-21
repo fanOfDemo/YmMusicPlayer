@@ -6,10 +6,13 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.MediaStore;
 
+import com.yw.musicplayer.po.Ablums;
 import com.yw.musicplayer.po.Audio;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 项目名称：YmMusicPlayer
@@ -22,6 +25,9 @@ import java.util.List;
  */
 
 public class MediaUtils {
+
+    public static List<Audio> audioList = new ArrayList<Audio>();
+
     public static final String[] AUDIO_KEYS = new String[]{
             MediaStore.Audio.Media._ID,
             MediaStore.Audio.Media.TITLE,
@@ -47,9 +53,24 @@ public class MediaUtils {
             MediaStore.Audio.Media.DATA
     };
 
-    public static List<Audio> getAudioList(Context context) {
-        List<Audio> audioList = new ArrayList<Audio>();
+    public static void init(final Context context, final Callback callback) {
+        if (!audioList.isEmpty()) {
+            callback.onGetAudioListCallback(audioList);
+        }
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                getAudios(context);
+                callback.onGetAudioListCallback(audioList);
+            }
+        }).start();
+    }
 
+    public interface Callback {
+        void onGetAudioListCallback(List<Audio> arrayList);
+    }
+
+    private static void getAudios(Context context) {
         ContentResolver resolver = context.getContentResolver();
         Cursor cursor = resolver.query(
                 MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
@@ -58,8 +79,9 @@ public class MediaUtils {
                 null,
                 null);
 
+
         for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
-            Bundle bundle = new Bundle ();
+            Bundle bundle = new Bundle();
             for (int i = 0; i < AUDIO_KEYS.length; i++) {
                 final String key = AUDIO_KEYS[i];
                 final int columnIndex = cursor.getColumnIndex(key);
@@ -83,10 +105,34 @@ public class MediaUtils {
                         break;
                 }
             }
-            Audio audio = new Audio (bundle);
+            Audio audio = new Audio(bundle, context);
             audioList.add(audio);
         }
         cursor.close();
-        return audioList;
     }
+
+    public static ArrayList<Ablums> getAblums() {
+        ArrayList<Ablums> ablum = new ArrayList<Ablums>();
+        HashMap<Audio, Integer> map = new HashMap<>();
+        for (int i = 0; i < audioList.size(); i++) {
+            if (null != map.get(i)) {
+                map.put(audioList.get(i), map.get(audioList.get(i - 1)) + 1);
+            } else {
+                map.put(audioList.get(i), i);
+            }
+        }
+        for (Object o : map.entrySet()) {
+            Map.Entry entry = (Map.Entry) o;
+            Audio key = (Audio) entry.getKey();
+            Ablums ablums = new Ablums();
+            ablums.setmAlbumId(key.getAlbumId());
+            ablums.setmArtistId(key.getArtistId());
+            ablums.addAudio(key);
+            ablum.add(ablums);
+            int value = Integer.parseInt(entry.getValue().toString());
+        }
+        return ablum;
+    }
+
+
 }

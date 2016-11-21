@@ -1,5 +1,5 @@
 apply plugin: 'com.android.application'
-
+apply plugin: 'checkstyle'
 android {
     compileSdkVersion 23
     buildToolsVersion "23.0.2"
@@ -17,17 +17,75 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    lintOptions {
+        abortOnError false
+    }
 }
+checkstyle {
+    toolVersion '6.1.1'
+    showViolations true
+}
+
+task checkstyle(type: Checkstyle) {
+    source 'src'
+    include '**/*.java'
+    exclude '**/gen/**'
+    ignoreFailures false
+    configFile new File(rootDir, "chekstyle.xml")
+    // empty classpath
+    classpath = files()
+}
+
+def retrofitVersion = "2.1.0"
+def okHttpVersion = '3.4.1'
+def gsonVersion = '2.7'
+def rxJavaVersion = '1.1.9'
+def rxAndroidVersion = '1.2.1'
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:23.2.0'
-    compile 'com.android.support:design:23.2.0'
-    compile 'com.android.support:cardview-v7:23.2.0'
+    compile 'io.reactivex:rxandroid:1.2.1'
+    compile 'io.reactivex:rxjava:1.1.9'
+    compile 'com.squareup.okhttp3:okhttp:3.4.1'
+
+    compile 'com.jude:rollviewpager:1.4.5'
+
+    compile "com.google.code.gson:gson:${gsonVersion}"
+    compile "com.squareup.retrofit2:retrofit:${retrofitVersion}"
+    compile "com.squareup.retrofit2:converter-gson:${retrofitVersion}"
+    compile "com.squareup.retrofit2:adapter-rxjava:${retrofitVersion}"
+    compile "com.squareup.okhttp3:logging-interceptor:${okHttpVersion}"
+
+//B站多主题框架
+//    compile 'com.bilibili:magicasakura:0.1.1@aar'
+
+//下面的请无视
+
+    compile 'com.android.support:appcompat-v7:23.4.0'
+
+    compile 'com.android.support:design:23.4.0'
+
+    compile 'com.android.support:cardview-v7:23.4.0'
+
 
     compile 'com.cleveroad:audiovisualization:0.9.0'
+
+    compile 'com.github.bumptech.glide:glide:3.7.0'
+
     compile 'com.squareup.picasso:picasso:2.5.2'
+
     compile 'com.github.iammert:MusicPlayerView:e3b937c729'
 
+    compile 'com.android.support:support-v4:23.4.0'
+
+    compile 'com.android.support:recyclerview-v7:23.4.0'
+    compile 'com.yqritc:recyclerview-flexibledivider:1.4.0'
+
+    testCompile 'junit:junit:4.12'
+
+//    testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.4-beta2'
+//
+//    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.4-beta2'
+//
+//    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.4-beta2'
 }

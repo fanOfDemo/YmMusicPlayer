@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.yw.musicplayer.view.widget.StickyLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginTop="?actionBarSize"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
+
+
+    <RelativeLayout
+        android:id="@id/id_top_view"
+        android:layout_width="match_parent"
+        android:layout_height="180dp">
+
+        <com.jude.rollviewpager.RollPagerView
+            android:id="@+id/rollviewpager"
+            android:layout_width="match_parent"
+            android:layout_height="180dp"
+            app:rollviewpager_play_delay="3000" />
+
+
+    </RelativeLayout>
+
+    <android.support.design.widget.TabLayout
+        android:id="@+id/id_tab_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+
+    <android.support.v4.view.ViewPager
+        android:id="@id/id_viewpager"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+    </android.support.v4.view.ViewPager>
+</com.yw.musicplayer.view.widget.StickyLayout>

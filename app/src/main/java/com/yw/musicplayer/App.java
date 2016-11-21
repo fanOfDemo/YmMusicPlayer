@@ -1,8 +1,5 @@
 package com.yw.musicplayer;
 
-import com.yw.musicplayer.po.Audio;
-import com.yw.musicplayer.service.MainService;
-
 import android.app.Application;
 import android.app.Service;
 import android.content.ComponentName;
@@ -14,29 +11,67 @@ import android.os.IBinder;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.yw.musicplayer.po.Audio;
+import com.yw.musicplayer.service.MainService;
+import com.yw.musicplayer.util.MediaUtils;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * 项目名称：YmMusicPlayer
- * 类描述：
+ * 类描述：MVC仓储架构搞起
  * 创建人：wengyiming
  * 创建时间：16/3/2 下午10:50
  * 修改人：wengyiming
  * 修改时间：16/3/2 下午10:50
  * 修改备注：
+ *
+ * @author wengyiming
  */
 public class App extends Application implements ServiceConnection, AudioManager.OnAudioFocusChangeListener {
 
-    public static MainService mMainService;
+    public static MainService mMainService;//音乐播放service
+    private static List<Audio> audios = new ArrayList<>();
+    private AudioManager mAudioManager;//音频管理实例
 
-    private AudioManager mAudioManager;
+
+    private static App app;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        startMainService();
-        bindMainService();
-        mAudioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
+        app = this;
+        MediaUtils.init(this, new MediaUtils.Callback() {
+            @Override
+            public void onGetAudioListCallback(List<Audio> arrayList) {
+                audios = arrayList;
+                startMainService();
+                bindMainService();
+                mAudioManager = (AudioManager) getApp().getSystemService(Context.AUDIO_SERVICE);
+            }
+        });
     }
 
+    public static App getApp() {
+        return app;
+    }
+
+    public static void updateAudios(List<Audio> audios) {
+        App.audios = audios;
+    }
+
+    public static List<Audio> getAudios() {
+        if (audios == null || audios.isEmpty()) {
+            MediaUtils.init(getApp(), new MediaUtils.Callback() {
+                @Override
+                public void onGetAudioListCallback(List<Audio> arrayList) {
+                    audios = arrayList;
+                }
+            });
+        }
+        return audios;
+    }
 
     public void startMainService() {
         Intent it = new Intent(this, MainService.class);

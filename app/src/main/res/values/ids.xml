@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <item name="toolbar" type="id" />
+    <item name="id_top_view" type="id" />
+    <item name="id_tab_view" type="id" />
+    <item name="id_viewpager" type="id" />
+</resources>

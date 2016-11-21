@@ -1,15 +1,14 @@
 package com.yw.musicplayer;
 
-import com.cleveroad.audiovisualization.GLAudioVisualizationView;
-import com.yw.musicplayer.po.Audio;
-import com.yw.musicplayer.service.MainService;
-import com.yw.musicplayer.util.MediaUtils;
-
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.Window;
 import android.widget.TextView;
+
+import com.cleveroad.audiovisualization.GLAudioVisualizationView;
+import com.yw.musicplayer.po.Audio;
+import com.yw.musicplayer.service.MainService;
 
 import java.util.List;
 
@@ -21,7 +20,7 @@ public class MusicPlayerActivity extends AppCompatActivity {
     TextView next;
     GLAudioVisualizationView glAudioVisualizationView;
     MusicPlayerView mpv;
-    List<Audio> mAudioList;
+    List<Audio> mAudioList = App.getAudios();
     int curPosition = 0;
     boolean isPaused = true;
     boolean isStoped = true;
@@ -34,16 +33,20 @@ public class MusicPlayerActivity extends AppCompatActivity {
         glAudioVisualizationView = (GLAudioVisualizationView) findViewById(R.id.visualizer_view);
         glAudioVisualizationView.linkTo(0);
         curPosition = getIntent().getIntExtra("position", 0);
-        mAudioList = MainService.mAudioList;
-        if (mAudioList == null || mAudioList.isEmpty()) {
-            mAudioList = MediaUtils.getAudioList(this);
-        }
+        try {
 
+        }catch (IndexOutOfBoundsException e){
+
+        }
         App.mMainService.start(mAudioList.get(curPosition));
         musicTitle = (TextView) findViewById(R.id.title);
         prev = (TextView) findViewById(R.id.prevBtn);
         next = (TextView) findViewById(R.id.nextBtn);
         musicTitle.setText(mAudioList.get(curPosition).getTitle() + " \n" + mAudioList.get(curPosition).getArtist());
+
+
+//        music/search
+//        https://api.douban.com/v2/music/:id
         mpv = (MusicPlayerView) findViewById(R.id.mpv);
 
     }
@@ -99,7 +102,7 @@ public class MusicPlayerActivity extends AppCompatActivity {
                 mpv.stop();
             }
         }
-     
+
         glAudioVisualizationView.linkTo(MainService.mPlayer);
         mpv.setCoverURL("http://img0.imgtn.bdimg.com/it/u=826641845,3645215705&fm=21&gp=0.jpg");
 

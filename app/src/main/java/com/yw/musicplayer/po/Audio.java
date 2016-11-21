@@ -1,8 +1,14 @@
 package com.yw.musicplayer.po;
 
+import android.content.ContentResolver;
+import android.content.Context;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 
+import java.io.File;
 import java.io.Serializable;
 
 /**
@@ -15,18 +21,18 @@ import java.io.Serializable;
  * 修改备注：
  */
 public class Audio implements Serializable {
-
-
-    private String mTitle,
-            mTitleKey,
-            mArtist,
-            mArtistKey,
-            mComposer,
-            mAlbum,
-            mAlbumKey,
-            mDisplayName,
-            mMimeType,
-            mPath;
+    private String imagePath;
+    private Uri imageUri;
+    private String mTitle;
+    private String mTitleKey;
+    private String mArtist;
+    private String mArtistKey;
+    private String mComposer;
+    private String mAlbum;
+    private String mAlbumKey;
+    private String mDisplayName;
+    private String mMimeType;
+    private String mPath;
 
     private int mId,
             mArtistId,
@@ -43,7 +49,10 @@ public class Audio implements Serializable {
             isMusic = false,
             isNotification = false;
 
-    public Audio(Bundle bundle) {
+    public Audio() {
+    }
+
+    public Audio(Bundle bundle, Context context) {
         mId = bundle.getInt(MediaStore.Audio.Media._ID);
         mTitle = bundle.getString(MediaStore.Audio.Media.TITLE);
         mTitleKey = bundle.getString(MediaStore.Audio.Media.TITLE_KEY);
@@ -68,7 +77,29 @@ public class Audio implements Serializable {
         isMusic = bundle.getInt(MediaStore.Audio.Media.IS_MUSIC) == 1;
         isNotification = bundle.getInt(MediaStore.Audio.Media.IS_NOTIFICATION) == 1;
 
+        setImage(context, mAlbumId);
     }
+
+
+    private void setImage(Context context, int albumId) {
+        ContentResolver musicResolve = context.getContentResolver();
+        Cursor cursor = musicResolve.query(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI,
+                new String[]{MediaStore.Audio.Albums._ID, MediaStore.Audio.Albums.ALBUM_ART},
+                MediaStore.Audio.Albums._ID + "=?",
+                new String[]{String.valueOf(albumId)},
+                null);
+        if (cursor != null && cursor.moveToFirst()) {
+            String path = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART));
+            if (!TextUtils.isEmpty(path)) {
+                Uri uri = Uri.fromFile(new File(path));
+                this.imagePath = path;
+                this.imageUri = uri;
+            }
+            cursor.close();
+        }
+
+    }
+
 
     public int getId() {
         return mId;
@@ -158,4 +189,16 @@ public class Audio implements Serializable {
         return mPath;
     }
 
+
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
+    }
+
+    public Uri getImageUri() {
+        return imageUri;
+    }
 }
