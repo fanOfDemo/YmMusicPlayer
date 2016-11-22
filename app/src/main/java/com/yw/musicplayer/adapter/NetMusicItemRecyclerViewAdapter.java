@@ -23,7 +23,7 @@ import java.util.List;
  */
 public class NetMusicItemRecyclerViewAdapter extends RecyclerView.Adapter<NetMusicItemRecyclerViewAdapter.ViewHolder> {
 
-    public void setmValues(List<BaiduMHotList.SongListEntity> mValues) {
+    public void updateItems(List<BaiduMHotList.SongListEntity> mValues) {
         this.mValues = mValues;
         notifyDataSetChanged();
     }

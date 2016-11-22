@@ -2,6 +2,7 @@ package com.yw.musicplayer;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
@@ -14,9 +15,11 @@ import android.view.ViewGroup;
 
 import com.yw.musicplayer.adapter.NetMusicItemRecyclerViewAdapter;
 import com.yw.musicplayer.po.BaiduMHotList;
+import com.yw.musicplayer.po.MusicData;
 import com.yw.musicplayer.service.ApiService;
 import com.yw.musicplayer.service.MusicApi;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,8 +40,7 @@ public class BillboardItemFragment extends Fragment {
     private static final String ARG_COLUMN_COUNT = "column-count";
     // TODO: Customize parameters
     private int mColumnCount = 1;
-    private OnListFragmentInteractionListener mListener;
-
+    List<BaiduMHotList.SongListEntity> list = new ArrayList<>();
     private NetMusicItemRecyclerViewAdapter netMusicItemRecyclerViewAdapter;
 
     /**
@@ -79,9 +81,40 @@ public class BillboardItemFragment extends Fragment {
             if (mColumnCount <= 1) {
                 recyclerView.setLayoutManager(new LinearLayoutManager(context));
             } else {
-                recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
+                if (mColumnCount > 1)
+                    recyclerView.setLayoutManager(new GridLayoutManager(context, 2));
             }
-            recyclerView.setAdapter(netMusicItemRecyclerViewAdapter = new NetMusicItemRecyclerViewAdapter(new ArrayList<BaiduMHotList.SongListEntity>(), mListener));
+
+//            recyclerView.setAdapter(netMusicItemRecyclerViewAdapter = new MyCommonAdapter(getActivity(), R.layout.fragment_name_item, list));
+            recyclerView.setAdapter(netMusicItemRecyclerViewAdapter = new NetMusicItemRecyclerViewAdapter(new ArrayList<BaiduMHotList.SongListEntity>(), new OnListFragmentInteractionListener() {
+                @Override
+                public void onListFragmentInteraction(final int item) {
+                    final BaiduMHotList.SongListEntity songListEntity = list.get(item);
+                    subscription.add(ApiService.getInstance().createApi(MusicApi.class).play(songListEntity.getSong_id())
+                            .observeOn(Schedulers.io())
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(new Action1<MusicData>() {
+                                @SuppressLint("SetTextI18n")
+                                @Override
+                                public void call(MusicData t) {
+                                    if (t == null) return;
+                                    if (t.getError_code() == 22000) {
+                                        songListEntity.setMusicData(t);
+                                        Intent mIntent = new Intent(getActivity(), MusicPlayerActivity.class);
+                                        mIntent.putExtra("position", item);
+                                        mIntent.putExtra("list", (Serializable) list);
+                                        startActivity(mIntent);
+                                    }
+                                }
+                            }, new Action1<Throwable>() {
+                                @Override
+                                public void call(Throwable throwable) {
+                                }
+                            }));
+
+                }
+            }));
 //            recyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(getActivity()).color(Color.GRAY).sizeResId(R.dimen.divider).marginResId(R.dimen.leftmargin, R.dimen.rightmargin).build());
         }
         return view;
@@ -115,7 +148,8 @@ public class BillboardItemFragment extends Fragment {
                         if (t.getError_code() == 22000) {
                             List<BaiduMHotList.SongListEntity> a = t.getSong_list();
                             Log.e("", a.toString());
-                            netMusicItemRecyclerViewAdapter.setmValues(a);
+                            list = a;
+                            netMusicItemRecyclerViewAdapter.updateItems(list);
                         }
 
                     }
@@ -124,24 +158,19 @@ public class BillboardItemFragment extends Fragment {
                     public void call(Throwable throwable) {
                     }
                 }));
+
+
     }
 
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnListFragmentInteractionListener) {
-            mListener = (OnListFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnListFragmentInteractionListener");
-        }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
     }
 
     /**
@@ -155,7 +184,6 @@ public class BillboardItemFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnListFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onListFragmentInteraction(int item);
     }
 }

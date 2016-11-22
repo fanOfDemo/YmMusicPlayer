@@ -8,7 +8,7 @@ import android.net.Uri;
 import android.os.Binder;
 import android.os.IBinder;
 
-import com.yw.musicplayer.po.Audio;
+import com.yw.musicplayer.po.BaiduMHotList;
 
 import java.io.IOException;
 
@@ -52,7 +52,7 @@ public class MainService extends Service {
 
     public static MediaPlayer mPlayer;
     private int mCurrentState;
-    private Audio mCurrentAudio;
+    private BaiduMHotList.SongListEntity mCurrentAudio;
 
     //这个方法用来初始化我们的MediaPlayer  
     private void init() {
@@ -114,11 +114,16 @@ public class MainService extends Service {
 
     }
 
-    public void start(Audio audio) {
+    public void start(BaiduMHotList.SongListEntity audio) {
         init();
         try {
             if (mCurrentState == State.IDLE) {
-                mPlayer.setDataSource(this, Uri.parse(audio.getPath()));    //Valid Sates IDLE  
+                if(audio.isLocal()) {
+                    mPlayer.setDataSource(this, Uri.parse(audio.getAudio().getPath()));    //Valid Sates IDLE
+                }else {
+                    mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);// 设置媒体流类型
+                    mPlayer.setDataSource(this,Uri.parse(audio.getMusicData().getBitrate().getFile_link()));    //Valid Sates IDLE
+                }
                 mCurrentAudio = audio;
             }
             changeState(State.INITIALIZED);
@@ -149,7 +154,7 @@ public class MainService extends Service {
     private OnPlaybackListener mPlaybackListener;
 
     public static interface OnPlaybackListener {
-        public void onStateChanged(Audio source, int state);
+        public void onStateChanged(BaiduMHotList.SongListEntity source, int state);
     }
 
     public static class State {

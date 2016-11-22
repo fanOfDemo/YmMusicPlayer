@@ -7,9 +7,10 @@ import android.view.Window;
 import android.widget.TextView;
 
 import com.cleveroad.audiovisualization.GLAudioVisualizationView;
-import com.yw.musicplayer.po.Audio;
+import com.yw.musicplayer.po.BaiduMHotList;
 import com.yw.musicplayer.service.MainService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import co.mobiwise.library.MusicPlayerView;
@@ -20,10 +21,11 @@ public class MusicPlayerActivity extends AppCompatActivity {
     TextView next;
     GLAudioVisualizationView glAudioVisualizationView;
     MusicPlayerView mpv;
-    List<Audio> mAudioList = App.getAudios();
+    List<BaiduMHotList.SongListEntity> mAudioList = new ArrayList<>();
     int curPosition = 0;
     boolean isPaused = true;
     boolean isStoped = true;
+    BaiduMHotList.SongListEntity songListEntity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,22 +35,31 @@ public class MusicPlayerActivity extends AppCompatActivity {
         glAudioVisualizationView = (GLAudioVisualizationView) findViewById(R.id.visualizer_view);
         glAudioVisualizationView.linkTo(0);
         curPosition = getIntent().getIntExtra("position", 0);
+        mAudioList = (List<BaiduMHotList.SongListEntity>) getIntent().getSerializableExtra("list");
+        if (mAudioList == null || mAudioList.isEmpty()) {
+            BaiduMHotList.SongListEntity a = new BaiduMHotList.SongListEntity();
+        }
         try {
 
-        }catch (IndexOutOfBoundsException e){
+        } catch (IndexOutOfBoundsException e) {
 
         }
-        App.mMainService.start(mAudioList.get(curPosition));
+        songListEntity = mAudioList.get(curPosition);
+        App.mMainService.start(songListEntity);
         musicTitle = (TextView) findViewById(R.id.title);
         prev = (TextView) findViewById(R.id.prevBtn);
         next = (TextView) findViewById(R.id.nextBtn);
-        musicTitle.setText(mAudioList.get(curPosition).getTitle() + " \n" + mAudioList.get(curPosition).getArtist());
+        updateInfo();
 
 
 //        music/search
 //        https://api.douban.com/v2/music/:id
         mpv = (MusicPlayerView) findViewById(R.id.mpv);
 
+    }
+
+    private void updateInfo() {
+        musicTitle.setText(songListEntity.getTitle() + " \n" + (songListEntity.isLocal() ? songListEntity.getAudio().getArtist() : songListEntity.getArtist_name()));
     }
 
     private void player() {
@@ -60,7 +71,7 @@ public class MusicPlayerActivity extends AppCompatActivity {
         mpv.setMax(curTime);
         mpv.setProgress(MainService.mPlayer.getCurrentPosition());
         App.mMainService.start(mAudioList.get(curPosition));
-        musicTitle.setText(mAudioList.get(curPosition).getTitle() + " \n" + mAudioList.get(curPosition).getArtist());
+        updateInfo();
     }
 
 
@@ -104,8 +115,7 @@ public class MusicPlayerActivity extends AppCompatActivity {
         }
 
         glAudioVisualizationView.linkTo(MainService.mPlayer);
-        mpv.setCoverURL("http://img0.imgtn.bdimg.com/it/u=826641845,3645215705&fm=21&gp=0.jpg");
-
+        mpv.setCoverURL(songListEntity.isLocal() ? songListEntity.getAudio().getImagePath() : songListEntity.getPic_big());
         mpv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

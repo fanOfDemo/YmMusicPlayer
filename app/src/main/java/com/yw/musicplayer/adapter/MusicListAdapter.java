@@ -3,9 +3,6 @@
  */
 package com.yw.musicplayer.adapter;
 
-import com.yw.musicplayer.R;
-import com.yw.musicplayer.po.Audio;
-
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +10,9 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.yw.musicplayer.R;
+import com.yw.musicplayer.po.Audio;
 
 import java.util.ArrayList;
 

@@ -1,5 +1,6 @@
 package com.yw.musicplayer.po;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -12,7 +13,7 @@ import java.util.List;
  * 修改备注：
  */
 
-public class BaiduMHotList {
+public class BaiduMHotList implements Serializable {
 
 
     /**
@@ -111,7 +112,7 @@ public class BaiduMHotList {
         this.song_list = song_list;
     }
 
-    public static class BillboardEntity {
+    public static class BillboardEntity implements Serializable {
         private String billboard_type;
         private String billboard_no;
         private String update_date;
@@ -222,7 +223,9 @@ public class BaiduMHotList {
         }
     }
 
-    public static class SongListEntity {
+    public static class SongListEntity implements Serializable {
+
+
         private String artist_id;
         private String language;
         private String pic_big;
@@ -267,6 +270,22 @@ public class BaiduMHotList {
         private String resource_type_ext;
         private String mv_provider;
         private String artist_name;
+
+
+        private Audio audio;
+
+        public Audio getAudio() {
+            return audio;
+        }
+
+        public void setAudio(Audio audio) {
+            this.audio = audio;
+        }
+
+        public boolean isLocal() {
+            return audio != null;
+        }
+
 
         public String getArtist_id() {
             return artist_id;
@@ -619,5 +638,19 @@ public class BaiduMHotList {
         public void setArtist_name(String artist_name) {
             this.artist_name = artist_name;
         }
+
+
+        private MusicData musicData;
+
+        public MusicData getMusicData() {
+            return musicData;
+        }
+
+        public void setMusicData(MusicData musicData) {
+            this.musicData = musicData;
+        }
+
     }
+
+
 }

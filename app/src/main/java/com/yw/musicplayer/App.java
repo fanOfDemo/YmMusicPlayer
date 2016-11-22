@@ -12,6 +12,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.yw.musicplayer.po.Audio;
+import com.yw.musicplayer.po.BaiduMHotList;
 import com.yw.musicplayer.service.MainService;
 import com.yw.musicplayer.util.MediaUtils;
 
@@ -99,9 +100,10 @@ public class App extends Application implements ServiceConnection, AudioManager.
             mMainService = binder.getService();
             mMainService.setOnPlaybackListener(new MainService.OnPlaybackListener() {
                 @Override
-                public void onStateChanged(final Audio source, final int state) {
+                public void onStateChanged(BaiduMHotList.SongListEntity source, int state) {
 
                 }
+
             });
 //            mMainService.registerServiceCallback(mPlayManager);
         }
