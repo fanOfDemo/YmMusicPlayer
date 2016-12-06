@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
+import com.squareup.picasso.Picasso;
 import com.yw.musicplayer.NameItemFragment;
 import com.yw.musicplayer.R;
 import com.yw.musicplayer.po.Audio;
@@ -44,11 +44,10 @@ public class NameItemRecyclerViewAdapter extends RecyclerView.Adapter<NameItemRe
 
 
 
-        Glide.with(holder.mView.getContext())
+        Picasso.with(holder.mView.getContext())
                 .load("file://" + holder.mItem.getImagePath())
                 .centerCrop()
                 .placeholder(R.drawable.icon_play)
-                .crossFade()
                 .into(holder.playEq);
 
 

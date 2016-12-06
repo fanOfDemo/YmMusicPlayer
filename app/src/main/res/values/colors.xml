@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#ffff5722</color>
-    <color name="colorPrimaryDark">#ffbf360c</color>
-    <color name="colorAccent">#ffbf360c</color>
+    <color name="colorPrimary">@color/mp.theme.dark_blue.colorPrimary</color>
+    <color name="colorPrimaryDark">@color/mp.theme.dark_blue.colorPrimaryDark</color>
+    <color name="colorAccent">@color/mp.theme.dark_blue.colorAccent</color>
 
-    <color name="tv_branding">#ffff5722</color>
-    <color name="tv_branding_dark">#ffbf360c</color>
+    <color name="tv_branding">#FFFFFF</color>
+    <color name="tv_branding_dark">#FFFFFF</color>
     <color name="tv_branding_accent">#00B8D4</color>
     <color name="bt_accent">#00B8D4</color>
     <color name="media_item_icon_playing">@color/bt_accent</color>
     <color name="media_item_icon_not_playing">#ccc</color>
     <color name="drawer_header_background">@color/bt_accent</color>
-    <color name="error_message_background">#ffff1600</color>
+    <color name="error_message_background">#FFFFFF</color>
     <color name="drawer_item_selected_background">#feee</color>
     <color name="drawer_item_tint_color">#ff333333</color>
     <color name="fullscreen_secondary_line_color">#E5CCCCCC</color>
@@ -26,9 +26,50 @@
     <color name="theme_color_primary_dark">#b85671</color>
     <color name="theme_color_primary_trans">#99f0486c</color>
 
-    <color name="p">#ffff5722</color>
-    <color name="p_d">#ffbf360c</color>
-    <color name="ac">#00B8D4</color>
+    <color name="p">#FFFFFF</color>
+    <color name="p_d">#FFFFFF</color>
+    <color name="ac">#FFFFFF</color>
 
+
+    <!-- Common -->
+    <color name="transparent">#00000000</color>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+
+    <!-- Theme - Dark Blue -->
+    <color name="mp.theme.dark_blue.background">#3C5F78</color>
+    <color name="mp.theme.dark_blue.gradientColor">#507E9F</color>
+    <color name="mp.theme.dark_blue.colorControlActivated">#7AFFFFFF</color>
+    <color name="mp.theme.dark_blue.colorControlHighlight">#7AFFFFFF</color>
+
+    <color name="mp.theme.dark_blue.colorPrimary">#3C5F78</color>
+    <color name="mp.theme.dark_blue.colorPrimaryDark">#3C5F78</color>
+    <color name="mp.theme.dark_blue.colorAccent">#DDF9FF</color>
+    <color name="mp.theme.dark_blue.textColorPrimary">#DDF9FF</color>
+    <color name="mp.theme.dark_blue.textColorSecondary">#3C5F78</color>
+
+    <color name="mp.theme.dark_blue.actionMode.statusBarColor">#9CBDCC</color>
+    <color name="mp.theme.dark_blue.actionMode.background">#9CBDCC</color>
+
+    <color name="mp.line">#3DDDF9FF</color>
+    <color name="mp.list.background">#1ADDF9FF</color>
+    <color name="mp.list.background.selected">#6CDDF9FF</color>
+    <color name="mp.list.scrollThumb">#99DDF9FF</color>
+    <color name="mp.list.text.title">#DDF9FF</color>
+    <color name="mp.list.text.title.selected">#3C5F78</color>
+    <color name="mp.list.text.hint">#9CBDCC</color>
+    <color name="mp.list.text.hint.selected">#7C3C5F78</color>
+
+    <color name="mp.popupMenu.background">#B4D2E0</color>
+
+    <color name="mp.text.hint">#9CBDCC</color>
+
+    <!-- Segmented Control -->
+    <color name="mp.widget.segmented.default">?attr/colorAccent</color>
+    <color name="mp.widget.segmented.checked">#3C5F78</color>
+
+    <!-- CharacterView -->
+    <color name="mp.characterView.background">#9CBDCC</color>
+    <color name="mp.characterView.textColor">@color/mp.list.text.title</color>
 
 </resources>

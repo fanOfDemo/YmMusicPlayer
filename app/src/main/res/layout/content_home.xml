@@ -1,17 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.yw.musicplayer.view.widget.StickyLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+
+<com.sothree.slidinguppanel.SlidingUpPanelLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/sliding_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginTop="?actionBarSize"
-    android:fitsSystemWindows="true"
-    android:orientation="vertical">
-
+    android:gravity="bottom"
+    app:umanoDragView="@+id/ll_panl"
+    app:umanoPanelHeight="168dp"
+    app:umanoScrollableView="@+id/id_viewpager"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    app:umanoShadowHeight="4dp">
 
     <RelativeLayout
         android:id="@id/id_top_view"
         android:layout_width="match_parent"
-        android:layout_height="180dp">
+        android:layout_height="200dp">
 
         <com.jude.rollviewpager.RollPagerView
             android:id="@+id/rollviewpager"
@@ -22,18 +27,35 @@
 
     </RelativeLayout>
 
-    <android.support.design.widget.TabLayout
-        android:id="@+id/id_tab_view"
-        app:tabMode="scrollable"
+
+    <LinearLayout
+        android:id="@+id/ll_panl"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="match_parent"
+        android:gravity="center|top"
+        android:orientation="vertical">
 
+        <android.support.design.widget.TabLayout
+            android:id="@+id/id_tab_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:tabMode="scrollable" />
 
-    <android.support.v4.view.ViewPager
-        android:id="@id/id_viewpager"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        <!--<in.srain.cube.views.ptr.PtrClassicFrameLayout-->
+            <!--android:id="@+id/view_pager_ptr_frame"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--&gt;-->
 
-    </android.support.v4.view.ViewPager>
-</com.yw.musicplayer.view.widget.StickyLayout>
+            <android.support.v4.view.ViewPager
+                android:id="@id/id_viewpager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+                <!---->
+            </android.support.v4.view.ViewPager>
+
+        <!--</in.srain.cube.views.ptr.PtrClassicFrameLayout>-->
+    </LinearLayout>
+</com.sothree.slidinguppanel.SlidingUpPanelLayout>

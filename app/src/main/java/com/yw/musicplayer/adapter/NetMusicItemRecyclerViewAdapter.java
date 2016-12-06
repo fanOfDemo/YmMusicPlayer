@@ -8,8 +8,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.yw.musicplayer.BillboardItemFragment;
 import com.yw.musicplayer.NameItemFragment;
+import com.yw.musicplayer.NetMusicListFragment;
 import com.yw.musicplayer.R;
 import com.yw.musicplayer.po.Audio;
 import com.yw.musicplayer.po.BaiduMHotList;
@@ -29,9 +29,9 @@ public class NetMusicItemRecyclerViewAdapter extends RecyclerView.Adapter<NetMus
     }
 
     private List<BaiduMHotList.SongListEntity> mValues;
-    private final BillboardItemFragment.OnListFragmentInteractionListener mListener;
+    private final NetMusicListFragment.OnListFragmentInteractionListener mListener;
 
-    public NetMusicItemRecyclerViewAdapter(List<BaiduMHotList.SongListEntity> items, BillboardItemFragment.OnListFragmentInteractionListener listener) {
+    public NetMusicItemRecyclerViewAdapter(List<BaiduMHotList.SongListEntity> items, NetMusicListFragment.OnListFragmentInteractionListener listener) {
         mValues = items;
         mListener = listener;
     }
@@ -47,14 +47,14 @@ public class NetMusicItemRecyclerViewAdapter extends RecyclerView.Adapter<NetMus
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         holder.mItem = mValues.get(position);
         holder.title.setText(holder.mItem.getTitle());
-        holder.description.setText(holder.mItem.getTitle());
+        holder.description.setText(holder.mItem.getAlbum_title());
 
 
         Glide.with(holder.mView.getContext())
-                .load(holder.mItem.getPic_big())
-                .centerCrop()
+                .load(holder.mItem.getPic_small())
                 .placeholder(R.drawable.icon_play)
-                .crossFade()
+                .crossFade().centerCrop()
+                .error(R.mipmap.ic_launcher)
                 .into(holder.playEq);
 
 

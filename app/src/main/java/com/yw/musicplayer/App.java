@@ -19,6 +19,8 @@ import com.yw.musicplayer.util.MediaUtils;
 import java.util.ArrayList;
 import java.util.List;
 
+import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
+
 /**
  * 项目名称：YmMusicPlayer
  * 类描述：MVC仓储架构搞起
@@ -52,6 +54,13 @@ public class App extends Application implements ServiceConnection, AudioManager.
                 mAudioManager = (AudioManager) getApp().getSystemService(Context.AUDIO_SERVICE);
             }
         });
+
+        CalligraphyConfig.initDefault(
+                new CalligraphyConfig.Builder()
+                        .setDefaultFontPath("fonts/Roboto-Monospace-Regular.ttf")
+                        .setFontAttrId(R.attr.fontPath)
+                        .build()
+        );
     }
 
     public static App getApp() {

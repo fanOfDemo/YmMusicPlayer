@@ -34,7 +34,7 @@ import rx.subscriptions.CompositeSubscription;
  * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
  * interface.
  */
-public class BillboardItemFragment extends Fragment {
+public class NetMusicListFragment extends Fragment {
 
     // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
@@ -47,13 +47,13 @@ public class BillboardItemFragment extends Fragment {
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public BillboardItemFragment() {
+    public NetMusicListFragment() {
     }
 
     // TODO: Customize parameter initialization
     @SuppressWarnings("unused")
-    public static BillboardItemFragment newInstance(int columnCount) {
-        BillboardItemFragment fragment = new BillboardItemFragment();
+    public static NetMusicListFragment newInstance(int columnCount) {
+        NetMusicListFragment fragment = new NetMusicListFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_COLUMN_COUNT, columnCount);
         fragment.setArguments(args);
@@ -73,7 +73,6 @@ public class BillboardItemFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_name_item_list, container, false);
-
         // Set the adapter
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
@@ -136,28 +135,32 @@ public class BillboardItemFragment extends Fragment {
     }
 
     private void getGameList() {
-        subscription.add(ApiService.getInstance().createApi(MusicApi.class).login(20 * mColumnCount, mColumnCount)
-                .observeOn(Schedulers.io())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<BaiduMHotList>() {
-                    @SuppressLint("SetTextI18n")
-                    @Override
-                    public void call(BaiduMHotList t) {
-                        if (t == null) return;
-                        if (t.getError_code() == 22000) {
-                            List<BaiduMHotList.SongListEntity> a = t.getSong_list();
-                            Log.e("", a.toString());
-                            list = a;
-                            netMusicItemRecyclerViewAdapter.updateItems(list);
-                        }
+        if (list == null || list.isEmpty()) {
+            subscription.add(ApiService.getInstance().createApi(MusicApi.class).login(20 * mColumnCount, mColumnCount)
+                    .observeOn(Schedulers.io())
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Action1<BaiduMHotList>() {
+                        @SuppressLint("SetTextI18n")
+                        @Override
+                        public void call(BaiduMHotList t) {
+                            if (t == null) return;
+                            if (t.getError_code() == 22000) {
+                                List<BaiduMHotList.SongListEntity> a = t.getSong_list();
+                                Log.e("", a.toString());
+                                list = a;
+                                netMusicItemRecyclerViewAdapter.updateItems(list);
+                            }
 
-                    }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                    }
-                }));
+                        }
+                    }, new Action1<Throwable>() {
+                        @Override
+                        public void call(Throwable throwable) {
+                        }
+                    }));
+        } else {
+            netMusicItemRecyclerViewAdapter.updateItems(list);
+        }
 
 
     }
@@ -171,6 +174,18 @@ public class BillboardItemFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
+    }
+
+    public boolean checkCanDoRefresh() {
+        return false;
+    }
+
+    public void show() {
+        this.show();
+    }
+
+    public void hide() {
+        this.hide();
     }
 
     /**

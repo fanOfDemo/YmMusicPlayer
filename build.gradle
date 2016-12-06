@@ -6,7 +6,12 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:2.2.0'
+        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
 
+        classpath "net.rdrei.android.buildtimetracker:gradle-plugin:0.8.0"
+        classpath 'com.github.ben-manes:gradle-versions-plugin:0.13.0'
+
+        classpath 'com.getkeepsafe.dexcount:dexcount-gradle-plugin:0.6.1'
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
@@ -14,15 +19,82 @@ buildscript {
 
 allprojects {
     repositories {
-        jcenter()
         mavenCentral()
-
+        jcenter()
         maven {
             url "https://jitpack.io"
+        }
+        flatDir {
+            dirs 'libs' //this way we can find the .aar file in libs folder
+        }
+    }
+    tasks.whenTaskAdded { task ->
+        if (task.name.equals("lint")) {
+            task.enabled = false
         }
     }
 }
 
 task clean(type: Delete) {
     delete rootProject.buildDir
+}
+def daggerVersion = "2.6"
+def retrofitVersion = "2.1.0"
+def supportVersion = "24.2.0"
+def okHttpVersion = '3.4.1'
+def gsonVersion = '2.7'
+def rxBindingVersion = '0.4.0'
+def rxJavaVersion = '1.1.9'
+def rxAndroidVersion = '1.2.1'
+
+def frescoVersion = '0.13.0'
+def leakCanaryVersion = "1.4-beta2"
+def blockCanaryVersion = '1.2.0'
+
+project.ext {
+
+    applicationId = "com.pcseaz"
+    buildToolsVersion = "23.0.2"
+    compileSdkVersion = 23
+    minSdkVersion = 15
+    targetSdkVersion = 23
+    versionCode = 1
+    versionName = "1.0.0"
+    abortOnLintError = false
+    checkLintRelease = false
+    useJack = false
+    abortOnLintError = false
+
+    javaVersion = JavaVersion.VERSION_1_7
+
+    libSupportAppcompat = "com.android.support:appcompat-v7:${supportVersion}"
+    libSupportDesign = "com.android.support:design:${supportVersion}"
+    libSupportRecyclerview = "com.android.support:recyclerview-v7:${supportVersion}"
+    libSupportCardview = "com.android.support:cardview-v7:${supportVersion}"
+    libSupportV4 = "com.android.support:support-v4:${supportVersion}"
+
+    libRxAndroid = "io.reactivex:rxandroid:${rxAndroidVersion}"
+    libRxJava = "io.reactivex:rxjava:${rxJavaVersion}"
+
+    libjsoup = 'org.jsoup:jsoup:1.10.1'
+    libEventBus = "org.greenrobot:eventbus:3.0.0"
+    libJavaxAnnotation = "javax.annotation:jsr250-api:1.0"
+    libJavaxInject = "javax.inject:javax.inject:1"
+
+    libGson = "com.google.code.gson:gson:${gsonVersion}"
+    libRetrofit = "com.squareup.retrofit2:retrofit:${retrofitVersion}"
+    libRetrofitConverterGson = "com.squareup.retrofit2:converter-gson:${retrofitVersion}"
+    libRetrofitAdapterRxJava = "com.squareup.retrofit2:adapter-rxjava:${retrofitVersion}"
+    libOkHttpLoggingInterceptor = "com.squareup.okhttp3:logging-interceptor:${okHttpVersion}"
+
+//    libFresco = "com.facebook.fresco:fresco:${frescoVersion}"
+//    libFrescoImagePipeline = "com.facebook.fresco:imagepipeline-okhttp3:${frescoVersion}"
+
+
+    libLeakCanary = "com.squareup.leakcanary:leakcanary-android:${leakCanaryVersion}"
+    libBlockCanary = "com.github.moduth:blockcanary-ui:${blockCanaryVersion}"
+    libBlockCanaryRelease = "com.github.moduth:blockcanary-no-op:${blockCanaryVersion}"
+//    libFlexbox = 'com.google.android:flexbox:0.2.3'
+//    libPhotoView = 'me.relex:photodraweeview:1.0.0'
+
 }

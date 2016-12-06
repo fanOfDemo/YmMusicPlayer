@@ -1,7 +1,6 @@
 package com.yw.musicplayer;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
@@ -11,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 import com.yw.musicplayer.adapter.NameItemRecyclerViewAdapter;
 
 /**
@@ -69,7 +67,6 @@ public class NameItemFragment extends Fragment {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
             recyclerView.setAdapter(new NameItemRecyclerViewAdapter(App.getAudios(), mListener));
-            recyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(getActivity()).color(Color.GRAY).sizeResId(R.dimen.divider).marginResId(R.dimen.leftmargin, R.dimen.rightmargin).build());
         }
         return view;
     }

@@ -283,7 +283,7 @@ public class BaiduMHotList implements Serializable {
         }
 
         public boolean isLocal() {
-            return audio != null;
+            return false;
         }
 
 

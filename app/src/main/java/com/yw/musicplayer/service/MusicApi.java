@@ -3,8 +3,10 @@ package com.yw.musicplayer.service;
 import com.yw.musicplayer.po.BaiduMHotList;
 import com.yw.musicplayer.po.MusicData;
 
+import okhttp3.ResponseBody;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
+import retrofit2.http.Url;
 import rx.Observable;
 
 /**
@@ -28,4 +30,8 @@ public interface MusicApi {
     //    method=baidu.ting.song.playAAC&songid=877578
     @GET("v1/restserver/ting?format=json%E6%88%96xml&calback=&from=webapp_music&method=baidu.ting.song.playAAC")
     Observable<MusicData> play(@Query("songid") String songid);
+
+
+    @GET
+    Observable<ResponseBody> downloadFileWithDynamicUrlSync(@Url String fileUrl);
 }

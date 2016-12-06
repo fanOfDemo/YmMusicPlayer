@@ -14,9 +14,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
 import com.jude.rollviewpager.RollPagerView;
 import com.jude.rollviewpager.adapter.LoopPagerAdapter;
+import com.squareup.picasso.Picasso;
 import com.yw.musicplayer.adapter.HomeViewPagerAdapter;
 import com.yw.musicplayer.po.BaiduMHotList;
 import com.yw.musicplayer.service.ApiService;
@@ -40,7 +40,7 @@ import rx.subscriptions.CompositeSubscription;
  * 修改备注：
  */
 
-public class DetailActivity extends AppCompatActivity implements NameItemFragment.OnListFragmentInteractionListener, BillboardItemFragment.OnListFragmentInteractionListener {
+public class DetailActivity extends AppCompatActivity implements NameItemFragment.OnListFragmentInteractionListener, NetMusicListFragment.OnListFragmentInteractionListener {
     private TestLoopAdapter mLoopAdapter;
 
 
@@ -55,7 +55,7 @@ public class DetailActivity extends AppCompatActivity implements NameItemFragmen
 
         ArrayList<Fragment> fragments = getFragments();
 
-        viewPager.setAdapter(new HomeViewPagerAdapter(getSupportFragmentManager(), fragments));
+        viewPager.setAdapter(new HomeViewPagerAdapter(getSupportFragmentManager()));
         tableLayout.setupWithViewPager(viewPager);
     }
 
@@ -126,9 +126,8 @@ public class DetailActivity extends AppCompatActivity implements NameItemFragmen
             });
             view.setScaleType(ImageView.ScaleType.CENTER_CROP);
             view.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-            Glide.with(DetailActivity.this)
+            Picasso.with(DetailActivity.this)
                     .load(a.get(position).getPic_big())
-                    .fitCenter()
                     .placeholder(R.mipmap.ic_launcher)
                     .error(R.mipmap.ic_launcher)
                     .into(view);
