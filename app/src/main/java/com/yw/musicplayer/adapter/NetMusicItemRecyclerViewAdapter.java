@@ -28,6 +28,10 @@ public class NetMusicItemRecyclerViewAdapter extends RecyclerView.Adapter<NetMus
         notifyDataSetChanged();
     }
 
+    public void updateItems(BaiduMHotList.SongListEntity v) {
+        this.mValues.add(v);
+    }
+
     private List<BaiduMHotList.SongListEntity> mValues;
     private final NetMusicListFragment.OnListFragmentInteractionListener mListener;
 

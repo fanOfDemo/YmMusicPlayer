@@ -11,10 +11,13 @@ import android.os.IBinder;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.yw.musicplayer.event.BasePlayEvent;
 import com.yw.musicplayer.po.Audio;
-import com.yw.musicplayer.po.BaiduMHotList;
+import com.yw.musicplayer.po.MusicData;
 import com.yw.musicplayer.service.MainService;
 import com.yw.musicplayer.util.MediaUtils;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -106,10 +109,11 @@ public class App extends Application implements ServiceConnection, AudioManager.
     public void onServiceConnected(ComponentName name, IBinder service) {
         if (service instanceof MainService.ServiceBinder) {
             MainService.ServiceBinder binder = (MainService.ServiceBinder) service;
+            EventBus.getDefault().post(new BasePlayEvent(BasePlayEvent.Opration.IDLE));
             mMainService = binder.getService();
             mMainService.setOnPlaybackListener(new MainService.OnPlaybackListener() {
                 @Override
-                public void onStateChanged(BaiduMHotList.SongListEntity source, int state) {
+                public void onStateChanged(MusicData.BitrateEntity source, int state) {
 
                 }
 

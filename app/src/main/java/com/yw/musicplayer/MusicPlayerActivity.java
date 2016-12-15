@@ -4,13 +4,14 @@ import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.text.SpannableStringBuilder;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
 import com.cleveroad.audiovisualization.GLAudioVisualizationView;
+import com.yw.musicplayer.base.BaseActivity;
+import com.yw.musicplayer.event.BasePlayEvent;
 import com.yw.musicplayer.po.BaiduMHotList;
 import com.yw.musicplayer.service.ApiService;
 import com.yw.musicplayer.service.MainService;
@@ -18,14 +19,15 @@ import com.yw.musicplayer.service.MusicApi;
 import com.yw.musicplayer.util.LyricManager;
 import com.yw.musicplayer.view.widget.LyricView;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.List;
 
+import butterknife.Bind;
 import co.mobiwise.library.MusicPlayerView;
 import okhttp3.ResponseBody;
 import rx.android.schedulers.AndroidSchedulers;
@@ -33,47 +35,40 @@ import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
-public class MusicPlayerActivity extends AppCompatActivity implements LyricManager.OnProgressChangedListener {
-    private TextView musicTitle;
-    private TextView prev;
-    private TextView next;
-    private LyricView lyricView;
-    private GLAudioVisualizationView glAudioVisualizationView;
-    private MusicPlayerView mpv;
-    private List<BaiduMHotList.SongListEntity> mAudioList = new ArrayList<>();
-    private int curPosition = 0;
-    private boolean isPaused = true;
-    private boolean isStoped = true;
+public class MusicPlayerActivity extends BaseActivity implements LyricManager.OnProgressChangedListener {
+    @Bind(R.id.visualizer_view)
+    GLAudioVisualizationView glAudioVisualizationView;
+    @Bind(R.id.title)
+    TextView musicTitle;
+    @Bind(R.id.mpv)
+    MusicPlayerView mpv;
+    @Bind(R.id.lyrcview)
+    LyricView lyricView;
+    @Bind(R.id.prevBtn)
+    TextView prev;
+    @Bind(R.id.nextBtn)
+    TextView next;
+
+
     private BaiduMHotList.SongListEntity songListEntity;
     private LyricManager lyricManager;
     private int lineNumber = -1;
 
     @Override
+    protected int getLayoutResId() {
+        return R.layout.activity_music_player;
+    }
+
+    @Override
+    protected String getTag() {
+        return "MusicPlayerActivity";
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_music_player);
-        lyricView = (LyricView) findViewById(R.id.lyrcview);
-        glAudioVisualizationView = (GLAudioVisualizationView) findViewById(R.id.visualizer_view);
+        songListEntity = (BaiduMHotList.SongListEntity) getIntent().getSerializableExtra("songListEntity");
         glAudioVisualizationView.linkTo(0);
-        curPosition = getIntent().getIntExtra("position", 0);
-        mAudioList = (List<BaiduMHotList.SongListEntity>) getIntent().getSerializableExtra("list");
-        if (mAudioList == null || mAudioList.isEmpty()) {
-            BaiduMHotList.SongListEntity a = new BaiduMHotList.SongListEntity();
-        }
-        lyricManager = LyricManager.getInstance(this);
-        lyricManager.setOnProgressChangedListener(this);
-        songListEntity = mAudioList.get(curPosition);
-        App.mMainService.start(songListEntity);
-        lyricView.setCurrentPosition(MainService.mPlayer.getCurrentPosition());
-        musicTitle = (TextView) findViewById(R.id.title);
-        prev = (TextView) findViewById(R.id.prevBtn);
-        next = (TextView) findViewById(R.id.nextBtn);
-        mpv = (MusicPlayerView) findViewById(R.id.mpv);
-
-
-        updateInfo();
-
-
     }
 
     Runnable runnable = new Runnable() {
@@ -81,64 +76,53 @@ public class MusicPlayerActivity extends AppCompatActivity implements LyricManag
         public void run() {
             if (MainService.mPlayer != null && MainService.mPlayer.isPlaying()) {
                 lyricManager.setCurrentTimeMillis(MainService.mPlayer.getCurrentPosition());
-                mpv.post(runnable);
+                if (runnable != null)
+                    mpv.post(runnable);
             }
         }
     };
 
 
     private void updateInfo() {
+        lyricView.setCurrentPosition(MainService.mPlayer.getCurrentPosition());
         musicTitle.setText(songListEntity.getTitle() + " \n" + (songListEntity.isLocal() ? songListEntity.getAudio().getArtist() : songListEntity.getArtist_name()));
+        mpv.setCoverURL(songListEntity.isLocal() ? songListEntity.getAudio().getImagePath() : songListEntity.getPic_big());
         mpv.postDelayed(runnable, 1000);
-    }
-
-    private void player() {
-        if (mpv.isRotating()) {
-            App.mMainService.pause();
-            mpv.setProgress(0);
-        }
-        final int curTime = MainService.mPlayer.getDuration() / 1000;
-        mpv.setMax(curTime);
-        mpv.setProgress(MainService.mPlayer.getCurrentPosition());
-        App.mMainService.start(mAudioList.get(curPosition));
-        updateInfo();
-
+        downloadLyrc();
     }
 
 
     @Override
     public void onResume() {
         super.onResume();
-        subscription = new CompositeSubscription();
-        downloadLyrc();
+        lyricManager = LyricManager.getInstance(this);
+        lyricManager.setOnProgressChangedListener(this);
         mpv.postDelayed(new Runnable() {
             @Override
             public void run() {
                 initMediaView();
                 glAudioVisualizationView.onResume();
+                updateInfo();
+
             }
         }, 500);
     }
 
     private void initMediaView() {
         if (MainService.mPlayer.isPlaying()) {
-            isStoped = false;
-            isPaused = false;
             final int curTime = MainService.mPlayer.getDuration() / 1000;
-            mpv.setMax(curTime);
+            mpv.setMax(curTime <= 0 ? 100 : curTime);
             mpv.setProgress(MainService.mPlayer.getCurrentPosition());
             mpv.setAutoProgress(true);
             mpv.start();
         } else {
             if (MainService.mPlayer == null) {
-                isStoped = true;
-                isPaused = true;
                 mpv.setProgress(0);
                 mpv.setAutoProgress(true);
                 mpv.stop();
             } else if (!MainService.mPlayer.isPlaying()) {
                 final int curTime = MainService.mPlayer.getDuration() / 1000;
-                mpv.setMax(curTime);
+                mpv.setMax(curTime <= 0 ? 100 : curTime);
                 mpv.setProgress(MainService.mPlayer.getCurrentPosition());
                 mpv.setAutoProgress(true);
                 mpv.stop();
@@ -152,33 +136,31 @@ public class MusicPlayerActivity extends AppCompatActivity implements LyricManag
             public void onClick(View v) {
                 if (mpv.isRotating()) {
                     mpv.stop();
-                    App.mMainService.pause();
+                    postEvent(BasePlayEvent.Opration.START);
                 } else {
                     mpv.start();
-                    App.mMainService.start(mAudioList.get(curPosition));
+                    postEvent(BasePlayEvent.Opration.START);
                 }
             }
         });
         prev.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (curPosition <= 0) {
-                    curPosition = mAudioList.size() - 1;
-                }
-                curPosition--;
-                player();
+                postEvent(BasePlayEvent.Opration.PREV);
             }
         });
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (curPosition >= mAudioList.size()) {
-                    curPosition = 0;
-                }
-                curPosition++;
-                player();
+                postEvent(BasePlayEvent.Opration.NEXT);
             }
         });
+    }
+
+    private void postEvent(int opration) {
+        EventBus.getDefault().post(new BasePlayEvent(opration));
+        songListEntity = MainService.getCurSong();
+        updateInfo();
     }
 
     protected CompositeSubscription subscription = new CompositeSubscription();
@@ -186,12 +168,15 @@ public class MusicPlayerActivity extends AppCompatActivity implements LyricManag
     private void downloadLyrc() {
         final File futureStudioIconFile = new File(getLyrcSDPath());
         Log.e("tag", futureStudioIconFile.getAbsolutePath());
-        try {
-            lyricManager.setNormalTextColor(R.color.colorAccent);
-            lyricManager.setSelectedTextColor(R.color.colorAccent);
-            lyricManager.setLyricFile(futureStudioIconFile);
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (futureStudioIconFile.exists()) {
+            try {
+                lyricManager.setNormalTextColor(R.color.colorAccent);
+                lyricManager.setSelectedTextColor(R.color.colorAccent);
+                lyricManager.setLyricFile(futureStudioIconFile);
+            } catch (IOException e) {
+
+            }
+        } else {
             subscription.add(ApiService.getInstance().createApi(MusicApi.class).downloadFileWithDynamicUrlSync(songListEntity.getLrclink())
                     .observeOn(Schedulers.io())
                     .subscribeOn(Schedulers.io())
@@ -206,7 +191,6 @@ public class MusicPlayerActivity extends AppCompatActivity implements LyricManag
                                 try {
                                     Log.e("", futureStudioIconFile.getAbsolutePath());
                                     lyricManager.setLyricFile(futureStudioIconFile);
-
                                 } catch (IOException e1) {
                                 }
                             }
@@ -281,7 +265,6 @@ public class MusicPlayerActivity extends AppCompatActivity implements LyricManag
     public void onPause() {
         glAudioVisualizationView.onPause();
         super.onPause();
-        subscription.unsubscribe();
     }
 
 

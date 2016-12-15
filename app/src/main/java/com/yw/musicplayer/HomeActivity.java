@@ -6,10 +6,9 @@ import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,10 +20,10 @@ import com.jude.rollviewpager.RollPagerView;
 import com.jude.rollviewpager.adapter.LoopPagerAdapter;
 import com.squareup.picasso.Picasso;
 import com.yw.musicplayer.adapter.HomeViewPagerAdapter;
+import com.yw.musicplayer.base.BaseActivity;
 import com.yw.musicplayer.po.BaiduMHotList;
 import com.yw.musicplayer.service.ApiService;
 import com.yw.musicplayer.service.MusicApi;
-import com.yw.musicplayer.util.StatusBarCompat;
 import com.yw.musicplayer.view.widget.DragExpendLayout;
 import com.yw.musicplayer.view.widget.MyAppBar;
 import com.yw.musicplayer.view.widget.MyViewPager;
@@ -32,16 +31,13 @@ import com.yw.musicplayer.view.widget.MyViewPager;
 import java.util.List;
 
 import butterknife.Bind;
-import butterknife.ButterKnife;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
 
-public class HomeActivity extends AppCompatActivity
+public class HomeActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener, NameItemFragment.OnListFragmentInteractionListener, NetMusicListFragment.OnListFragmentInteractionListener {
-    @Bind(R.id.toolbar)
-    Toolbar mToolbar;
+
     @Bind(R.id.rollviewpager)
     RollPagerView mRollviewpager;
     @Bind(R.id.appbar)
@@ -62,13 +58,18 @@ public class HomeActivity extends AppCompatActivity
     private int mAppbarHeight;
 
     @Override
+    protected int getLayoutResId() {
+        return R.layout.activity_home;
+    }
+
+    @Override
+    protected String getTag() {
+        return null;
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home);
-        StatusBarCompat.compat(this);
-        ButterKnife.bind(this);
-        setSupportActionBar(mToolbar);
-
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, mDrawerLayout, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         mDrawerLayout.addDrawerListener(toggle);
@@ -78,7 +79,22 @@ public class HomeActivity extends AppCompatActivity
         final HomeViewPagerAdapter mPagerAdapter = new HomeViewPagerAdapter(getSupportFragmentManager());
         mIdViewpager.setAdapter(mPagerAdapter);
         mIdTabView.setupWithViewPager(mIdViewpager);
+        mIdViewpager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+        mIdViewpager.setCurrentItem(0);
         mDragexpendview.setDismissOffset(mAppbar.getMeasuredHeight());
         mIdViewpager.setEnabled(mDragexpendview.isExpanded());
         mDragexpendview.registerCallback(new DragExpendLayout.Callbacks() {
@@ -122,7 +138,7 @@ public class HomeActivity extends AppCompatActivity
                     if (fraction >= 0 && !mDragexpendview.isExpanded()) {//向上拉
                         mIdTabView.setVisibility(View.VISIBLE);
                         mDragexpendview.setTabHeight(mIdTabView.getHeight());
-                        mAppbar.setTranslationY(dy * 0.2f);
+                        mAppbar.setTranslationY(dy * 0.7f);
                         mIdTabView.setTranslationY(-fraction * (mAppbar.getHeight() + mIdTabView.getHeight()));
                     } else if (fraction < 0 && !mDragexpendview.isExpanded()) {//向下拉
                         mIdTabView.setVisibility(View.GONE);
@@ -134,14 +150,6 @@ public class HomeActivity extends AppCompatActivity
             }
         });
     }
-
-
-    @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
-    }
-
-
 
     @Override
     public void onBackPressed() {
@@ -250,8 +258,6 @@ public class HomeActivity extends AppCompatActivity
     }
 
 
-    protected CompositeSubscription subscription = new CompositeSubscription();
-
     private void getGameList() {
         subscription.add(ApiService.getInstance().createApi(MusicApi.class).login(5, 1)
                 .observeOn(Schedulers.io())
@@ -279,14 +285,12 @@ public class HomeActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-        subscription = new CompositeSubscription();
         getGameList();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        subscription.unsubscribe();
     }
 
 }

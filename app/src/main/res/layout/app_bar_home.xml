@@ -12,23 +12,28 @@
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:layout_gravity="top"
+        android:fitsSystemWindows="true"
         android:background="?attr/colorPrimary"
-        android:clipChildren="false">
-        <!--android:theme="@style/BaseAppTheme.AppBarOverlay"-->
-
-        <!--app:popupTheme="@style/BaseAppTheme.PopupOverlay"-->
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            android:visibility="gone" />
+        android:clipChildren="false"
+        android:theme="@style/AppTheme.AppBarOverlay">
 
         <com.jude.rollviewpager.RollPagerView
             android:id="@+id/rollviewpager"
             android:layout_width="match_parent"
-            android:layout_height="180dp"
+            android:layout_height="200dp"
             app:rollviewpager_play_delay="3000" />
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@android:color/transparent"
+            app:titleTextColor="@color/white"
+            app:title="@string/app_name"
+            android:paddingTop="@dimen/padding_top"
+            android:theme="@style/GalaxyZooThemeToolbarDarkOverflow"
+            app:popupTheme="@style/Theme.AppCompat.NoActionBar"
+            />
     </com.yw.musicplayer.view.widget.MyAppBar>
 
     <android.support.design.widget.TabLayout
@@ -36,9 +41,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="200dp"
-        app:tabTextColor="@color/white"
+        android:background="@color/mp.theme.dark_blue.actionMode.statusBarColor"
+        app:tabMode="scrollable"
         app:tabSelectedTextColor="@color/white"
-        app:tabMode="scrollable" />
+        app:tabTextColor="@color/white" />
 
     <com.yw.musicplayer.view.widget.DragExpendLayout
         android:id="@+id/dragexpendview"

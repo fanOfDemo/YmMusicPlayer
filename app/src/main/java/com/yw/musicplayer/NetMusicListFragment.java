@@ -8,21 +8,22 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.yw.musicplayer.adapter.NetMusicItemRecyclerViewAdapter;
+import com.yw.musicplayer.event.BasePlayEvent;
 import com.yw.musicplayer.po.BaiduMHotList;
 import com.yw.musicplayer.po.MusicData;
 import com.yw.musicplayer.service.ApiService;
 import com.yw.musicplayer.service.MusicApi;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import org.greenrobot.eventbus.EventBus;
 
+import java.util.ArrayList;
+
+import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
@@ -40,8 +41,8 @@ public class NetMusicListFragment extends Fragment {
     private static final String ARG_COLUMN_COUNT = "column-count";
     // TODO: Customize parameters
     private int mColumnCount = 1;
-    List<BaiduMHotList.SongListEntity> list = new ArrayList<>();
     private NetMusicItemRecyclerViewAdapter netMusicItemRecyclerViewAdapter;
+    BaiduMHotList baiduMHotList;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -88,30 +89,10 @@ public class NetMusicListFragment extends Fragment {
             recyclerView.setAdapter(netMusicItemRecyclerViewAdapter = new NetMusicItemRecyclerViewAdapter(new ArrayList<BaiduMHotList.SongListEntity>(), new OnListFragmentInteractionListener() {
                 @Override
                 public void onListFragmentInteraction(final int item) {
-                    final BaiduMHotList.SongListEntity songListEntity = list.get(item);
-                    subscription.add(ApiService.getInstance().createApi(MusicApi.class).play(songListEntity.getSong_id())
-                            .observeOn(Schedulers.io())
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(new Action1<MusicData>() {
-                                @SuppressLint("SetTextI18n")
-                                @Override
-                                public void call(MusicData t) {
-                                    if (t == null) return;
-                                    if (t.getError_code() == 22000) {
-                                        songListEntity.setMusicData(t);
-                                        Intent mIntent = new Intent(getActivity(), MusicPlayerActivity.class);
-                                        mIntent.putExtra("position", item);
-                                        mIntent.putExtra("list", (Serializable) list);
-                                        startActivity(mIntent);
-                                    }
-                                }
-                            }, new Action1<Throwable>() {
-                                @Override
-                                public void call(Throwable throwable) {
-                                }
-                            }));
-
+                    EventBus.getDefault().post(new BasePlayEvent(baiduMHotList, item, BasePlayEvent.Opration.START));
+                    Intent mIntent = new Intent(getActivity(), MusicPlayerActivity.class);
+                    mIntent.putExtra("songListEntity", baiduMHotList.getSong_list().get(item));
+                    startActivity(mIntent);
                 }
             }));
 //            recyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(getActivity()).color(Color.GRAY).sizeResId(R.dimen.divider).marginResId(R.dimen.leftmargin, R.dimen.rightmargin).build());
@@ -119,50 +100,74 @@ public class NetMusicListFragment extends Fragment {
         return view;
     }
 
-    protected CompositeSubscription subscription = new CompositeSubscription();
+
+    protected CompositeSubscription subscription;
 
     @Override
     public void onResume() {
         super.onResume();
-        subscription = new CompositeSubscription();
+        if (subscription == null) {
+            subscription = new CompositeSubscription();
+        }
         getGameList();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        subscription.unsubscribe();
+        if (subscription != null) {
+            subscription.unsubscribe();
+        }
     }
 
     private void getGameList() {
-        if (list == null || list.isEmpty()) {
+        if (baiduMHotList == null || baiduMHotList.getSong_list() == null || baiduMHotList.getSong_list().isEmpty()) {
             subscription.add(ApiService.getInstance().createApi(MusicApi.class).login(20 * mColumnCount, mColumnCount)
-                    .observeOn(Schedulers.io())
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
+                    .compose(this.<BaiduMHotList>applySchedulers())
                     .subscribe(new Action1<BaiduMHotList>() {
                         @SuppressLint("SetTextI18n")
                         @Override
                         public void call(BaiduMHotList t) {
                             if (t == null) return;
-                            if (t.getError_code() == 22000) {
-                                List<BaiduMHotList.SongListEntity> a = t.getSong_list();
-                                Log.e("", a.toString());
-                                list = a;
-                                netMusicItemRecyclerViewAdapter.updateItems(list);
+                            baiduMHotList = t;
+                            if (baiduMHotList.getError_code() == 22000) {
+                                Observable.from(baiduMHotList.getSong_list()).subscribe(new Action1<BaiduMHotList.SongListEntity>() {
+                                    @Override
+                                    public void call(final BaiduMHotList.SongListEntity songListEntity) {
+                                        subscription.add(ApiService.getInstance().createApi(MusicApi.class).play(songListEntity.getSong_id())
+                                                .compose(NetMusicListFragment.this.<MusicData>applySchedulers())
+                                                .subscribe(new Action1<MusicData>() {
+                                                    @SuppressLint("SetTextI18n")
+                                                    @Override
+                                                    public void call(MusicData t) {
+                                                        if (t == null) return;
+                                                        if (t.getError_code() == 22000) {
+                                                            songListEntity.setMusicData(t);
+                                                        }
+                                                    }
+                                                }));
+                                    }
+                                });
+                                netMusicItemRecyclerViewAdapter.updateItems(baiduMHotList.getSong_list());
                             }
 
                         }
-                    }, new Action1<Throwable>() {
-                        @Override
-                        public void call(Throwable throwable) {
-                        }
                     }));
         } else {
-            netMusicItemRecyclerViewAdapter.updateItems(list);
+            netMusicItemRecyclerViewAdapter.updateItems(baiduMHotList.getSong_list());
         }
 
 
+    }
+
+    <T> Observable.Transformer<T, T> applySchedulers() {
+        return new Observable.Transformer<T, T>() {
+            @Override
+            public Observable<T> call(Observable<T> observable) {
+                return observable.subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread());
+            }
+        };
     }
 
 

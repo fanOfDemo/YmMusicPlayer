@@ -1,15 +1,15 @@
 apply plugin: 'com.android.application'
 apply plugin: 'checkstyle'
 android {
-    compileSdkVersion 23
-    buildToolsVersion "23.0.2"
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
-        applicationId "com.yw.musicplayer"
-        minSdkVersion 15
-        targetSdkVersion 23
-        versionCode 1
-        versionName "1.0"
+        applicationId rootProject.ext.applicationId
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode rootProject.ext.versionCode
+        versionName rootProject.ext.versionName
     }
     buildTypes {
         release {
@@ -52,6 +52,7 @@ dependencies {
     compile rootProject.ext.libSupportCardview
 
 
+    compile rootProject.ext.libEventBus
 
     compile 'com.jakewharton:butterknife:7.0.1'
 
@@ -71,7 +72,6 @@ dependencies {
 
     compile 'com.github.iammert:MusicPlayerView:e3b937c729'
     compile 'com.jude:rollviewpager:1.4.5'
-
 
 //B站多主题框架
 //    compile 'com.bilibili:magicasakura:0.1.1@aar'

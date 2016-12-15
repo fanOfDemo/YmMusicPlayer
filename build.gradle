@@ -53,7 +53,7 @@ def blockCanaryVersion = '1.2.0'
 
 project.ext {
 
-    applicationId = "com.pcseaz"
+    applicationId = "com.yw.musicplayer"
     buildToolsVersion = "23.0.2"
     compileSdkVersion = 23
     minSdkVersion = 15

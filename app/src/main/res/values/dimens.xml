@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <dimen name="padding_top">0dp</dimen>
+
     <dimen name="refresh_load_icon_size">24dp</dimen>
 
     <dimen name="footer_padding">8dp</dimen>
