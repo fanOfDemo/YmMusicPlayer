@@ -1,7 +1,6 @@
 package com.yw.musicplayer.util;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Handler;
 import android.os.Message;
 import android.text.Spannable;
@@ -39,8 +38,8 @@ import java.util.List;
 public class LyricManager {
 
     private OnProgressChangedListener progressChangedListener;
-    private int selectedColor = Color.parseColor("#07FA81");
-    private int normalColor = Color.parseColor("#FFFFFF");
+    private int selectedColor = 0x07FA81;
+    private int normalColor = 0xffffff;
     private LyricInfo lyricInfo = null;
 
     private boolean flag_refresh = false;
@@ -86,7 +85,7 @@ public class LyricManager {
      *
      * @param file 歌词文件
      */
-    public void setLyricFile(File file,String encode) throws FileNotFoundException {
+    public void setLyricFile(File file, String encode) throws FileNotFoundException {
         setFileStream(new FileInputStream(file));
     }
 

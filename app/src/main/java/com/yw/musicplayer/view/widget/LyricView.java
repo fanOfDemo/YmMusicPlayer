@@ -128,7 +128,7 @@ public class LyricView extends RelativeLayout implements View.OnTouchListener {
         mTextView.setTextSize(16.0f); // 设置TextView字体大小
         mTextView.setLineSpacing(6, 1.5f); // 设置TextView行间距大小
         mTextView.setPadding(0, paddingValue, 0, paddingValue);
-        mTextView.setTextColor(0x000000);
+        mTextView.setTextColor(0xffffff);
 
         mScrollView.addView(mTextView, new android.view.ViewGroup.LayoutParams(android.view.ViewGroup.LayoutParams.MATCH_PARENT, android.view.ViewGroup.LayoutParams.WRAP_CONTENT));
 

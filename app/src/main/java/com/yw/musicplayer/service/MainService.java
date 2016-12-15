@@ -53,7 +53,7 @@ public class MainService extends Service {
 
     private MusicData.BitrateEntity bitrateEntity;
     private static BaiduMHotList baiduMHotList;
-    private static int postion = 0;
+    public static int postion = 0;
 
 
     public static BaiduMHotList.SongListEntity getCurSong() {

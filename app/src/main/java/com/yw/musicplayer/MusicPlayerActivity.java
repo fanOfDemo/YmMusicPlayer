@@ -9,7 +9,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
-import com.cleveroad.audiovisualization.GLAudioVisualizationView;
 import com.yw.musicplayer.base.BaseActivity;
 import com.yw.musicplayer.event.BasePlayEvent;
 import com.yw.musicplayer.po.BaiduMHotList;
@@ -22,6 +21,7 @@ import com.yw.musicplayer.view.widget.LyricView;
 import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -32,12 +32,11 @@ import co.mobiwise.library.MusicPlayerView;
 import okhttp3.ResponseBody;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
 public class MusicPlayerActivity extends BaseActivity implements LyricManager.OnProgressChangedListener {
-    @Bind(R.id.visualizer_view)
-    GLAudioVisualizationView glAudioVisualizationView;
     @Bind(R.id.title)
     TextView musicTitle;
     @Bind(R.id.mpv)
@@ -53,6 +52,7 @@ public class MusicPlayerActivity extends BaseActivity implements LyricManager.On
     private BaiduMHotList.SongListEntity songListEntity;
     private LyricManager lyricManager;
     private int lineNumber = -1;
+    private int lastPosition = 0;
 
     @Override
     protected int getLayoutResId() {
@@ -68,7 +68,12 @@ public class MusicPlayerActivity extends BaseActivity implements LyricManager.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         songListEntity = (BaiduMHotList.SongListEntity) getIntent().getSerializableExtra("songListEntity");
-        glAudioVisualizationView.linkTo(0);
+        lastPosition = MainService.postion;
+        lyricManager = LyricManager.getInstance(this);
+        lyricManager.setOnProgressChangedListener(this);
+        lyricManager.setNormalTextColor(R.color.white);
+        lyricManager.setSelectedTextColor(R.color.bt_accent);
+
     }
 
     Runnable runnable = new Runnable() {
@@ -76,43 +81,43 @@ public class MusicPlayerActivity extends BaseActivity implements LyricManager.On
         public void run() {
             if (MainService.mPlayer != null && MainService.mPlayer.isPlaying()) {
                 lyricManager.setCurrentTimeMillis(MainService.mPlayer.getCurrentPosition());
-                if (runnable != null)
-                    mpv.post(runnable);
+                if (runnable != null) {
+                    if (musicTitle != null) {
+                        musicTitle.postDelayed(runnable,1000);
+                    }
+                }
             }
         }
     };
 
-
     private void updateInfo() {
-        lyricView.setCurrentPosition(MainService.mPlayer.getCurrentPosition());
-        musicTitle.setText(songListEntity.getTitle() + " \n" + (songListEntity.isLocal() ? songListEntity.getAudio().getArtist() : songListEntity.getArtist_name()));
-        mpv.setCoverURL(songListEntity.isLocal() ? songListEntity.getAudio().getImagePath() : songListEntity.getPic_big());
-        mpv.postDelayed(runnable, 1000);
-        downloadLyrc();
+        if (MainService.postion != lastPosition || lastPosition == 0) {
+            final int curTime = MainService.mPlayer.getDuration()/1000;
+            lyricManager.setCurrentTimeMillis(MainService.mPlayer.getCurrentPosition());
+            musicTitle.setText(songListEntity.getTitle() + " \n" + (songListEntity.isLocal() ? songListEntity.getAudio().getArtist() : songListEntity.getArtist_name()));
+            mpv.setCoverURL(songListEntity.isLocal() ? songListEntity.getAudio().getImagePath() : songListEntity.getPic_big());
+            mpv.postDelayed(runnable, 500);
+            mpv.setMax(curTime <= 0 ? 100 : curTime);
+            downloadLyrc();
+        }
     }
-
 
     @Override
     public void onResume() {
         super.onResume();
-        lyricManager = LyricManager.getInstance(this);
-        lyricManager.setOnProgressChangedListener(this);
         mpv.postDelayed(new Runnable() {
             @Override
             public void run() {
                 initMediaView();
-                glAudioVisualizationView.onResume();
                 updateInfo();
-
             }
         }, 500);
     }
 
     private void initMediaView() {
+        final int curTime = MainService.mPlayer.getDuration() / 1000;
         if (MainService.mPlayer.isPlaying()) {
-            final int curTime = MainService.mPlayer.getDuration() / 1000;
             mpv.setMax(curTime <= 0 ? 100 : curTime);
-            mpv.setProgress(MainService.mPlayer.getCurrentPosition());
             mpv.setAutoProgress(true);
             mpv.start();
         } else {
@@ -121,15 +126,12 @@ public class MusicPlayerActivity extends BaseActivity implements LyricManager.On
                 mpv.setAutoProgress(true);
                 mpv.stop();
             } else if (!MainService.mPlayer.isPlaying()) {
-                final int curTime = MainService.mPlayer.getDuration() / 1000;
                 mpv.setMax(curTime <= 0 ? 100 : curTime);
-                mpv.setProgress(MainService.mPlayer.getCurrentPosition());
                 mpv.setAutoProgress(true);
                 mpv.stop();
             }
         }
 
-        glAudioVisualizationView.linkTo(MainService.mPlayer);
         mpv.setCoverURL(songListEntity.isLocal() ? songListEntity.getAudio().getImagePath() : songListEntity.getPic_big());
         mpv.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -173,31 +175,38 @@ public class MusicPlayerActivity extends BaseActivity implements LyricManager.On
                 lyricManager.setNormalTextColor(R.color.colorAccent);
                 lyricManager.setSelectedTextColor(R.color.colorAccent);
                 lyricManager.setLyricFile(futureStudioIconFile);
+                lyricManager.setCurrentTimeMillis(MainService.mPlayer.getCurrentPosition());
             } catch (IOException e) {
 
             }
         } else {
+            TextView textView = new TextView(this);
+            textView.setText("加载中");
+            lyricView.setEmptyView(textView);
+            lyricManager.setCurrentTimeMillis(MainService.mPlayer.getCurrentPosition());
             subscription.add(ApiService.getInstance().createApi(MusicApi.class).downloadFileWithDynamicUrlSync(songListEntity.getLrclink())
                     .observeOn(Schedulers.io())
                     .subscribeOn(Schedulers.io())
+                    .map(new Func1<ResponseBody, Boolean>() {
+                        @Override
+                        public Boolean call(ResponseBody responseBody) {
+                            return responseBody != null && writeResponseBodyToDisk(responseBody);
+
+                        }
+                    })
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Action1<ResponseBody>() {
+                    .subscribe(new Action1<Boolean>() {
                         @SuppressLint("SetTextI18n")
                         @Override
-                        public void call(ResponseBody t) {
-                            if (t == null) return;
-                            boolean writtenToDisk = writeResponseBodyToDisk(t);
-                            if (writtenToDisk) {
+                        public void call(Boolean responseBody) {
+                            if (responseBody) {
+                                Log.e("", futureStudioIconFile.getAbsolutePath());
                                 try {
-                                    Log.e("", futureStudioIconFile.getAbsolutePath());
                                     lyricManager.setLyricFile(futureStudioIconFile);
-                                } catch (IOException e1) {
+                                } catch (FileNotFoundException e) {
+                                    e.printStackTrace();
                                 }
                             }
-                        }
-                    }, new Action1<Throwable>() {
-                        @Override
-                        public void call(Throwable throwable) {
                         }
                     }));
         }
@@ -260,20 +269,6 @@ public class MusicPlayerActivity extends BaseActivity implements LyricManager.On
         return Environment.getExternalStorageDirectory() + File.separator + songListEntity.getTitle() + ".lrc";
     }
 
-
-    @Override
-    public void onPause() {
-        glAudioVisualizationView.onPause();
-        super.onPause();
-    }
-
-
-    @Override
-    protected void onDestroy() {
-        glAudioVisualizationView.release();
-        super.onDestroy();
-    }
-
     @Override
     public void onProgressChanged(String singleLine, boolean refresh) {
 
@@ -283,7 +278,6 @@ public class MusicPlayerActivity extends BaseActivity implements LyricManager.On
     public void onProgressChanged(SpannableStringBuilder stringBuilder, int lineNumber, boolean refresh) {
         if (this.lineNumber != lineNumber || refresh) {
             this.lineNumber = lineNumber;
-            Log.e("歌词", String.valueOf(stringBuilder));
             lyricView.setText(stringBuilder);
             lyricView.setCurrentPosition(lineNumber);
         }

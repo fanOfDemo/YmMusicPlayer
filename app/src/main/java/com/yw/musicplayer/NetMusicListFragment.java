@@ -130,6 +130,7 @@ public class NetMusicListFragment extends Fragment {
                         public void call(BaiduMHotList t) {
                             if (t == null) return;
                             baiduMHotList = t;
+                            netMusicItemRecyclerViewAdapter.updateItems(baiduMHotList.getSong_list());
                             if (baiduMHotList.getError_code() == 22000) {
                                 Observable.from(baiduMHotList.getSong_list()).subscribe(new Action1<BaiduMHotList.SongListEntity>() {
                                     @Override
@@ -137,20 +138,19 @@ public class NetMusicListFragment extends Fragment {
                                         subscription.add(ApiService.getInstance().createApi(MusicApi.class).play(songListEntity.getSong_id())
                                                 .compose(NetMusicListFragment.this.<MusicData>applySchedulers())
                                                 .subscribe(new Action1<MusicData>() {
-                                                    @SuppressLint("SetTextI18n")
                                                     @Override
                                                     public void call(MusicData t) {
                                                         if (t == null) return;
                                                         if (t.getError_code() == 22000) {
                                                             songListEntity.setMusicData(t);
+                                                            netMusicItemRecyclerViewAdapter.updateItems(baiduMHotList.getSong_list());
                                                         }
                                                     }
                                                 }));
                                     }
                                 });
-                                netMusicItemRecyclerViewAdapter.updateItems(baiduMHotList.getSong_list());
-                            }
 
+                            }
                         }
                     }));
         } else {

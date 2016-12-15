@@ -9,19 +9,19 @@
     android:gravity="center"
     tools:context="com.yw.musicplayer.MusicPlayerActivity">
 
-    <com.cleveroad.audiovisualization.GLAudioVisualizationView
-        android:id="@+id/visualizer_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="bottom"
-        app:background_color="@android:color/transparent"
-        app:bubble_size="20dp"
-        app:footer_height="80dp"
-        app:layers_count="8"
-        app:randomize_bubble_size="true"
-        app:wave_height="16dp"
-        app:waves_colors="@array/colors"
-        app:waves_count="8" />
+    <!--<com.cleveroad.audiovisualization.GLAudioVisualizationView-->
+        <!--android:id="@+id/visualizer_view"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_gravity="bottom"-->
+        <!--app:background_color="@android:color/transparent"-->
+        <!--app:bubble_size="20dp"-->
+        <!--app:footer_height="80dp"-->
+        <!--app:layers_count="8"-->
+        <!--app:randomize_bubble_size="true"-->
+        <!--app:wave_height="16dp"-->
+        <!--app:waves_colors="@array/colors"-->
+        <!--app:waves_count="8" />-->
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -36,14 +36,15 @@
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
             android:gravity="center"
-            android:text="dasdsadsa"
             android:textColor="#fff"
             android:textSize="20dp" />
 
         <co.mobiwise.library.MusicPlayerView
             android:id="@+id/mpv"
-            android:layout_width="200dp"
-            android:layout_height="200dp"
+            android:layout_width="280dp"
+            android:layout_height="300dp"
+            android:layout_gravity="center"
+            android:foregroundGravity="center"
             app:buttonColor="@color/md_light_blue_500_color_code"
             app:progressEmptyColor="@color/md_light_blue_100_color_code"
             app:progressLoadedColor="@color/md_light_blue_500_color_code"
@@ -53,7 +54,7 @@
         <com.yw.musicplayer.view.widget.LyricView
             android:id="@+id/lyrcview"
             android:layout_width="match_parent"
-            android:layout_height="200dp"/>
+            android:layout_height="150dp"/>
 
         <LinearLayout
             android:layout_width="match_parent"
