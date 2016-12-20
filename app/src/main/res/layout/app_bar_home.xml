@@ -51,12 +51,14 @@
         android:id="@+id/dragexpendview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+
         android:clipChildren="false"
         android:clipToPadding="false">
 
 
         <com.yw.musicplayer.view.widget.MyViewPager
             android:id="@id/id_viewpager"
+            android:background="@color/white"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 

@@ -24,6 +24,7 @@ import com.yw.musicplayer.base.BaseActivity;
 import com.yw.musicplayer.po.BaiduMHotList;
 import com.yw.musicplayer.service.ApiService;
 import com.yw.musicplayer.service.MusicApi;
+import com.yw.musicplayer.view.widget.DepthPageTransformer;
 import com.yw.musicplayer.view.widget.DragExpendLayout;
 import com.yw.musicplayer.view.widget.MyAppBar;
 import com.yw.musicplayer.view.widget.MyViewPager;
@@ -78,6 +79,7 @@ public class HomeActivity extends BaseActivity
         mRollviewpager.setAdapter(mLoopAdapter = new TestLoopAdapter(mRollviewpager));
         final HomeViewPagerAdapter mPagerAdapter = new HomeViewPagerAdapter(getSupportFragmentManager());
         mIdViewpager.setAdapter(mPagerAdapter);
+        mIdViewpager.setPageTransformer(true,new DepthPageTransformer());
         mIdTabView.setupWithViewPager(mIdViewpager);
         mIdViewpager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -96,6 +98,7 @@ public class HomeActivity extends BaseActivity
         });
         mIdViewpager.setCurrentItem(0);
         mDragexpendview.setDismissOffset(mAppbar.getMeasuredHeight());
+        mIdViewpager.setPageMargin(200);
         mIdViewpager.setEnabled(mDragexpendview.isExpanded());
         mDragexpendview.registerCallback(new DragExpendLayout.Callbacks() {
             private int dy;
@@ -259,7 +262,7 @@ public class HomeActivity extends BaseActivity
 
 
     private void getGameList() {
-        subscription.add(ApiService.getInstance().createApi(MusicApi.class).login(5, 1)
+        subscription.add(ApiService.getInstance().createApi(MusicApi.class).getList(5, 1,0)
                 .observeOn(Schedulers.io())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

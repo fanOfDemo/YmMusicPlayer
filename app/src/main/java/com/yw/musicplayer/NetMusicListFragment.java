@@ -42,7 +42,8 @@ public class NetMusicListFragment extends Fragment {
     // TODO: Customize parameters
     private int mColumnCount = 1;
     private NetMusicItemRecyclerViewAdapter netMusicItemRecyclerViewAdapter;
-    BaiduMHotList baiduMHotList;
+    private BaiduMHotList baiduMHotList;
+    private int curPage = 0;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -122,7 +123,7 @@ public class NetMusicListFragment extends Fragment {
 
     private void getGameList() {
         if (baiduMHotList == null || baiduMHotList.getSong_list() == null || baiduMHotList.getSong_list().isEmpty()) {
-            subscription.add(ApiService.getInstance().createApi(MusicApi.class).login(20 * mColumnCount, mColumnCount)
+            subscription.add(ApiService.getInstance().createApi(MusicApi.class).getList(20 * mColumnCount, mColumnCount, curPage)
                     .compose(this.<BaiduMHotList>applySchedulers())
                     .subscribe(new Action1<BaiduMHotList>() {
                         @SuppressLint("SetTextI18n")

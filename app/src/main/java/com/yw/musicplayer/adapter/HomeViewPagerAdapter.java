@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.view.ViewGroup;
 
 import com.yw.musicplayer.NetMusicListFragment;
 
@@ -66,4 +67,25 @@ public class HomeViewPagerAdapter extends FragmentPagerAdapter {
         arrayList.add(NetMusicListFragment.newInstance(25));
         return arrayList;
     }
+
+    @Override
+    public Object instantiateItem(ViewGroup container, int position) {
+        return super.instantiateItem(container, position);
+    }
+
+    @Override
+    public void destroyItem(ViewGroup container, int position, Object object) {
+//        ((MyViewPager) container).detachViewFromParent(((Fragment) object).getView());
+//        container.invalidate();
+    }
+
+    @Override
+    public void startUpdate(ViewGroup container) {
+//        int count = container.getChildCount();
+//        for (int i = 0; i < count; i++) {
+//            container.getChildAt(i).forceLayout();
+//        }
+        super.startUpdate(container);
+    }
+
 }

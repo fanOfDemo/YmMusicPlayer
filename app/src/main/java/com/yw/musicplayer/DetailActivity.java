@@ -61,7 +61,7 @@ public class DetailActivity extends AppCompatActivity implements NameItemFragmen
 
 
     private void getGameList() {
-        subscription.add(ApiService.getInstance().createApi(MusicApi.class).login(5,1)
+        subscription.add(ApiService.getInstance().createApi(MusicApi.class).getList(5,1,0)
                 .observeOn(Schedulers.io())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
