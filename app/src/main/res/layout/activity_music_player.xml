@@ -7,7 +7,7 @@
     android:layout_gravity="center"
     android:fitsSystemWindows="true"
     android:gravity="center"
-    tools:context="com.yw.musicplayer.MusicPlayerActivity">
+    tools:context="com.yw.musicplayer.view.MusicPlayerActivity">
 
     <!--<com.cleveroad.audiovisualization.GLAudioVisualizationView-->
         <!--android:id="@+id/visualizer_view"-->
@@ -39,19 +39,8 @@
             android:textColor="#fff"
             android:textSize="20dp" />
 
-        <co.mobiwise.library.MusicPlayerView
-            android:id="@+id/mpv"
-            android:layout_width="280dp"
-            android:layout_height="300dp"
-            android:layout_gravity="center"
-            android:foregroundGravity="center"
-            app:buttonColor="@color/md_light_blue_500_color_code"
-            app:progressEmptyColor="@color/md_light_blue_100_color_code"
-            app:progressLoadedColor="@color/md_light_blue_500_color_code"
-            app:textColor="#e6FFFFFF"
-            app:textSize="14sp" />
 
-        <com.yw.musicplayer.view.widget.LyricView
+        <com.yw.musicplayer.uikit.LyricView
             android:id="@+id/lyrcview"
             android:layout_width="match_parent"
             android:layout_height="150dp"/>

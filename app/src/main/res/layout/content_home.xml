@@ -1,17 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 
-<com.sothree.slidinguppanel.SlidingUpPanelLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/sliding_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="bottom"
-    app:umanoDragView="@+id/ll_panl"
-    app:umanoPanelHeight="168dp"
-    app:umanoScrollableView="@+id/id_viewpager"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    app:umanoShadowHeight="4dp">
+    android:orientation="vertical"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
     <RelativeLayout
         android:id="@id/id_top_view"
@@ -42,20 +39,20 @@
             app:tabMode="scrollable" />
 
         <!--<in.srain.cube.views.ptr.PtrClassicFrameLayout-->
-            <!--android:id="@+id/view_pager_ptr_frame"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent"-->
-            <!--&gt;-->
+        <!--android:id="@+id/view_pager_ptr_frame"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--&gt;-->
 
-            <android.support.v4.view.ViewPager
-                android:id="@id/id_viewpager"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        <android.support.v4.view.ViewPager
+            android:id="@id/id_viewpager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-                <!---->
-            </android.support.v4.view.ViewPager>
+            <!---->
+        </android.support.v4.view.ViewPager>
 
         <!--</in.srain.cube.views.ptr.PtrClassicFrameLayout>-->
     </LinearLayout>
-</com.sothree.slidinguppanel.SlidingUpPanelLayout>
+</LinearLayout>

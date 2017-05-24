@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'checkstyle'
+apply plugin: 'com.neenbedankt.android-apt'
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
@@ -10,6 +11,13 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode rootProject.ext.versionCode
         versionName rootProject.ext.versionName
+
+        manifestPlaceholders = [
+                //  替换成你的qq_id
+                qq_id: "123456789"
+        ]
+
+        testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
     }
     buildTypes {
         release {
@@ -54,30 +62,17 @@ dependencies {
 
     compile rootProject.ext.libEventBus
 
-    compile 'com.jakewharton:butterknife:7.0.1'
 
-    compile 'com.github.iammert:MusicPlayerView:e3b937c729'
+    apt 'com.google.guava:guava:19.0'
+    apt rootProject.ext.libDaggerCompiler
+    compile rootProject.ext.libDagger
+
+    compile 'com.jakewharton:butterknife:7.0.1'
+    compile 'me.yokeyword:fragmentation:0.10.4'
+
     compile 'com.jude:rollviewpager:1.4.5'
     compile 'uk.co.chrisjenx:calligraphy:2.2.0'
-//    compile rootProject.ext.libFlexbox
-//    provided rootProject.ext.libFresco
-//    provided rootProject.ext.libFrescoImagePipeline
 
-//    compile 'com.yqritc:recyclerview-flexibledivider:1.4.0'
-//    compile 'com.kyleduo.switchbutton:library:1.4.0'
-//    compile 'com.makeramen:roundedimageview:2.2.1'
-//    compile "cn.aigestudio.wheelpicker:WheelPicker:1.0.3"
-    compile 'com.sothree.slidinguppanel:library:3.3.1'
-
-
-    compile 'com.github.iammert:MusicPlayerView:e3b937c729'
-    compile 'com.jude:rollviewpager:1.4.5'
-
-//B站多主题框架
-//    compile 'com.bilibili:magicasakura:0.1.1@aar'
-
-//    compile 'com.tencent.bugly:crashreport:2.2.0.0'
-//    compile 'com.bigkoo:convenientbanner:2.0.5'
 
 
     compile 'com.cleveroad:audiovisualization:0.9.0'
@@ -86,9 +81,4 @@ dependencies {
 
 
     testCompile 'junit:junit:4.12'
-//    testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.4-beta2'
-//
-//    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.4-beta2'
-//
-//    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.4-beta2'
 }

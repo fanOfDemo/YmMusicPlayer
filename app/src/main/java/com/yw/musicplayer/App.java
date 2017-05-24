@@ -11,11 +11,14 @@ import android.os.IBinder;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.yw.musicplayer.domain.model.Audio;
+import com.yw.musicplayer.domain.model.MusicData;
 import com.yw.musicplayer.event.BasePlayEvent;
-import com.yw.musicplayer.po.Audio;
-import com.yw.musicplayer.po.MusicData;
-import com.yw.musicplayer.service.MainService;
+import com.yw.musicplayer.internal.di.components.ApplicationComponent;
+import com.yw.musicplayer.internal.di.components.DaggerApplicationComponent;
+import com.yw.musicplayer.internal.di.module.ApplicationModule;
 import com.yw.musicplayer.util.MediaUtils;
+import com.yw.musicplayer.view.MusicPlayService;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -37,10 +40,10 @@ import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
  */
 public class App extends Application implements ServiceConnection, AudioManager.OnAudioFocusChangeListener {
 
-    public static MainService mMainService;//音乐播放service
+    public static MusicPlayService mMainService;//音乐播放service
     private static List<Audio> audios = new ArrayList<>();
     private AudioManager mAudioManager;//音频管理实例
-
+    private ApplicationComponent mApplicationComponent;
 
     private static App app;
 
@@ -64,6 +67,18 @@ public class App extends Application implements ServiceConnection, AudioManager.
                         .setFontAttrId(R.attr.fontPath)
                         .build()
         );
+
+        initInjector();
+    }
+
+
+    private void initInjector() {
+        mApplicationComponent = DaggerApplicationComponent.builder()
+                .applicationModule(new ApplicationModule(this))
+                .build();
+    }
+    public ApplicationComponent getApplicationComponent() {
+        return mApplicationComponent;
     }
 
     public static App getApp() {
@@ -87,17 +102,17 @@ public class App extends Application implements ServiceConnection, AudioManager.
     }
 
     public void startMainService() {
-        Intent it = new Intent(this, MainService.class);
+        Intent it = new Intent(this, MusicPlayService.class);
         startService(it);
     }
 
     public void stopMainService() {
-        Intent it = new Intent(this, MainService.class);
+        Intent it = new Intent(this, MusicPlayService.class);
         stopService(it);
     }
 
     private void bindMainService() {
-        Intent it = new Intent(this, MainService.class);
+        Intent it = new Intent(this, MusicPlayService.class);
         this.bindService(it, this, Service.BIND_AUTO_CREATE);
     }
 
@@ -107,11 +122,11 @@ public class App extends Application implements ServiceConnection, AudioManager.
 
     @Override
     public void onServiceConnected(ComponentName name, IBinder service) {
-        if (service instanceof MainService.ServiceBinder) {
-            MainService.ServiceBinder binder = (MainService.ServiceBinder) service;
+        if (service instanceof MusicPlayService.ServiceBinder) {
+            MusicPlayService.ServiceBinder binder = (MusicPlayService.ServiceBinder) service;
             EventBus.getDefault().post(new BasePlayEvent(BasePlayEvent.Opration.IDLE));
             mMainService = binder.getService();
-            mMainService.setOnPlaybackListener(new MainService.OnPlaybackListener() {
+            mMainService.setOnPlaybackListener(new MusicPlayService.OnPlaybackListener() {
                 @Override
                 public void onStateChanged(MusicData.BitrateEntity source, int state) {
 

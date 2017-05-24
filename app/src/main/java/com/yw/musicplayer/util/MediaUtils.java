@@ -6,8 +6,8 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.MediaStore;
 
-import com.yw.musicplayer.po.Ablums;
-import com.yw.musicplayer.po.Audio;
+import com.yw.musicplayer.domain.model.Ablums;
+import com.yw.musicplayer.domain.model.Audio;
 
 import java.util.ArrayList;
 import java.util.HashMap;

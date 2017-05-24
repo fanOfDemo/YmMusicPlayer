@@ -13,7 +13,7 @@
         <item name="android:textColorPrimary">@color/colorPrimary</item>
         <item name="android:textColorSecondary">@color/colorPrimaryDark</item>
 
-        <item name="android:windowBackground">@color/mp.theme.dark_blue.background</item>
+        <item name="android:windowBackground">@null</item>
     </style>
 
 

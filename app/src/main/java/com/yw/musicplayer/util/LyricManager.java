@@ -8,7 +8,7 @@ import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
 
-import com.yw.musicplayer.po.LyricInfo;
+import com.yw.musicplayer.domain.model.LyricInfo;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;

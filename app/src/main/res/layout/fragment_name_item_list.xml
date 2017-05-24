@@ -10,5 +10,5 @@
     android:layout_marginLeft="16dp"
     android:layout_marginRight="16dp"
     app:layoutManager="LinearLayoutManager"
-    tools:context="com.yw.musicplayer.NameItemFragment"
+    tools:context="com.yw.musicplayer.view.NameItemFragment"
     tools:listitem="@layout/fragment_name_item" />
